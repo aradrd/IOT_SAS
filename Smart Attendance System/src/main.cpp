@@ -27,7 +27,7 @@ I2CKeyPad keyPad(KEYPAD_ADDR);
 Adafruit_SSD1306 display(DISPLAY_WIDTH, DISPLAY_HEIGHT, &Wire, DISPLAY_RST);
 
 uint8_t i = 0;
-bool isDown = false;
+bool keyStillPressed = false;
 
 void setup() {
   Serial.begin(9600);
@@ -67,15 +67,14 @@ void setup() {
 
 void keypadLoop() {
   Wire.requestFrom(KEYPAD_ADDR, (uint8_t) 1);
-  if (!isDown && keyPad.isPressed())
-  {
+  if (!keyStillPressed && keyPad.isPressed()) {
     char ch = keyPad.getChar();     // note we want the translated char
     Serial.print(ch);
     Serial.println(" pressed.");
     display.print(ch);
     display.display();
   }
-  isDown = keyPad.isPressed();
+  keyStillPressed = keyPad.isPressed();
 }
 
 void displayLoop() {
