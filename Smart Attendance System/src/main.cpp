@@ -10,6 +10,8 @@ const uint8_t DISPLAY_WIDTH = 128;
 const uint8_t DISPLAY_HEIGHT = 32;
 const uint8_t DISPLAY_RST = -1; // -1 means shared (whatever that means).
 const uint8_t DISPLAY_ADDR = 0x3C;
+const uint8_t DISPLAY_TEXT_SIZE = 1;
+const uint8_t DISPLAY_TEXT_COLOR = WHITE;
 
 // RFID consts.
 const uint8_t RFID_RST = 2;
@@ -25,6 +27,7 @@ I2CKeyPad keyPad(KEYPAD_ADDR);
 Adafruit_SSD1306 display(DISPLAY_WIDTH, DISPLAY_HEIGHT, &Wire, DISPLAY_RST);
 
 uint8_t i = 0;
+bool isDown = false;
 
 void setup() {
   Serial.begin(9600);
@@ -46,7 +49,6 @@ void setup() {
   while(!Serial);
   SPI.begin();
   mfrc522.PCD_Init();
-  delay(4);
   mfrc522.PCD_DumpVersionToSerial();
 
   // Init display.
@@ -54,18 +56,26 @@ void setup() {
     Serial.println(F("SSD1306 allocation failed"));
   }
   else {
+    display.clearDisplay();
+    display.setTextSize(DISPLAY_TEXT_SIZE);
+    display.setTextColor(DISPLAY_TEXT_COLOR);
+    display.setCursor(0, 0);
+    display.println("Please Enter ID:");
     display.display();
   }
 }
 
 void keypadLoop() {
   Wire.requestFrom(KEYPAD_ADDR, (uint8_t) 1);
-  if (keyPad.isPressed())
+  if (!isDown && keyPad.isPressed())
   {
     char ch = keyPad.getChar();     // note we want the translated char
     Serial.print(ch);
     Serial.println(" pressed.");
+    display.print(ch);
+    display.display();
   }
+  isDown = keyPad.isPressed();
 }
 
 void displayLoop() {
@@ -90,8 +100,8 @@ void loop() {
   i++;
 
   keypadLoop();
-  displayLoop();
+  // displayLoop();
   RFIDLoop();
 
-  delay(100);
+  delay(10);
 }
