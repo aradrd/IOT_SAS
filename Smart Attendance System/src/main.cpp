@@ -19,7 +19,7 @@ const uint8_t RFID_SS = 5;
 
 // Keypad consts (and non-const).
 const uint8_t KEYPAD_ADDR = 0x20;
-char keymap[17] = "DCBA#9630852*741";
+char keymap[17] = "147*2580369#ABCD";
 
 // Glob inits.
 MFRC522 mfrc522(RFID_SS, RFID_RST);
