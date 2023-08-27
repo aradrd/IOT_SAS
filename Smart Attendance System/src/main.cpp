@@ -13,6 +13,9 @@ const uint8_t DISPLAY_ADDR = 0x3C;
 const uint8_t DISPLAY_TEXT_SIZE = 1;
 const uint8_t DISPLAY_TEXT_COLOR = WHITE;
 
+const uint8_t I2C_SDA_2 = 33;
+const uint8_t I2C_SCL_2 = 32;
+
 // RFID consts.
 const uint8_t RFID_RST = 2;
 const uint8_t RFID_SS = 5;
@@ -24,10 +27,25 @@ char keymap[17] = "147*2580369#ABCD";
 // Glob inits.
 MFRC522 mfrc522(RFID_SS, RFID_RST);
 I2CKeyPad keyPad(KEYPAD_ADDR);
-Adafruit_SSD1306 display(DISPLAY_WIDTH, DISPLAY_HEIGHT, &Wire, DISPLAY_RST);
+Adafruit_SSD1306 display1(DISPLAY_WIDTH, DISPLAY_HEIGHT, &Wire, DISPLAY_RST);
+Adafruit_SSD1306 display2(DISPLAY_WIDTH, DISPLAY_HEIGHT, &Wire1, DISPLAY_RST);
 
 uint8_t i = 0;
 bool keyStillPressed = false;
+
+void initDisplay(Adafruit_SSD1306 &display, String msg){
+  if (!display.begin(SSD1306_SWITCHCAPVCC, DISPLAY_ADDR)) {
+    Serial.println(F("SSD1306 allocation failed"));
+  }
+  else {
+    display.clearDisplay();
+    display.setTextSize(DISPLAY_TEXT_SIZE);
+    display.setTextColor(DISPLAY_TEXT_COLOR);
+    display.setCursor(0, 0);
+    display.println(msg);
+    display.display();
+  }
+}
 
 void setup() {
   Serial.begin(9600);
@@ -35,6 +53,7 @@ void setup() {
   // Init I2C.
   Wire.begin();
   Wire.setClock(400000);
+  Wire1.begin(I2C_SDA_2, I2C_SCL_2, 400000);
 
   // Init keypad.
   if (keyPad.begin() == false) {
@@ -52,17 +71,8 @@ void setup() {
   mfrc522.PCD_DumpVersionToSerial();
 
   // Init display.
-  if (!display.begin(SSD1306_SWITCHCAPVCC, DISPLAY_ADDR)) {
-    Serial.println(F("SSD1306 allocation failed"));
-  }
-  else {
-    display.clearDisplay();
-    display.setTextSize(DISPLAY_TEXT_SIZE);
-    display.setTextColor(DISPLAY_TEXT_COLOR);
-    display.setCursor(0, 0);
-    display.println("Please Enter ID:");
-    display.display();
-  }
+  initDisplay(display1, "Please Enter ID:");
+  initDisplay(display2, "Display 2");
 }
 
 void keypadLoop() {
@@ -71,14 +81,14 @@ void keypadLoop() {
     char ch = keyPad.getChar();     // note we want the translated char
     Serial.print(ch);
     Serial.println(" pressed.");
-    display.print(ch);
-    display.display();
+    display1.print(ch);
+    display1.display();
   }
   keyStillPressed = keyPad.isPressed();
 }
 
 void displayLoop() {
-  display.invertDisplay(i % 20 >= 10);
+  display2.invertDisplay(i % 20 >= 10);
 }
 
 void RFIDLoop() {
@@ -99,7 +109,7 @@ void loop() {
   i++;
 
   keypadLoop();
-  // displayLoop();
+  displayLoop();
   RFIDLoop();
 
   delay(10);
