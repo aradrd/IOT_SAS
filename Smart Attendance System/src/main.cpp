@@ -1,17 +1,17 @@
 #include <Wire.h>
-#include <I2CKeyPad.h>
 #include <SPI.h>
 #include <MFRC522.h>
 #include <WiFi.h>
 #include <HTTPClient.h>
 
 #include <Display.h>
+#include <IOTKeypad.h>
 
 const uint8_t DISPLAY1_WIDTH = 128;
-const uint8_t DISPLAY1_HEIGHT = 32;
+const uint8_t DISPLAY1_HEIGHT = 64;
 
 const uint8_t DISPLAY2_WIDTH = 128;
-const uint8_t DISPLAY2_HEIGHT = 16;
+const uint8_t DISPLAY2_HEIGHT = 32;
 
 
 const uint8_t I2C_SDA_2 = 33;
@@ -20,10 +20,6 @@ const uint8_t I2C_SCL_2 = 32;
 // RFID consts.
 const uint8_t RFID_RST = 2;
 const uint8_t RFID_SS = 5;
-
-// Keypad consts (and non-const).
-const uint8_t KEYPAD_ADDR = 0x20;
-char keymap[17] = "147*2580369#ABCD";
 
 // WiFi credentials
 //const char* ssid = "Sas project";
@@ -34,12 +30,11 @@ String GOOGLE_SCRIPT_ID = "AKfycbwE-wRd4-k9RimSp_svSTjKdhQbHha_pTppacQrqA0_s8QRC
 
 // Glob inits.
 MFRC522 mfrc522(RFID_SS, RFID_RST);
-I2CKeyPad keyPad(KEYPAD_ADDR);
 Display display1(&Wire, DISPLAY1_WIDTH, DISPLAY1_HEIGHT);
 Display display2(&Wire1, DISPLAY2_WIDTH, DISPLAY2_HEIGHT);
+IOTKeypad keypad(display2);
 
 uint8_t i = 0;
-bool keyStillPressed = false;
 
 void readDataFromGoogleSheet(){
   if (WiFi.status() == WL_CONNECTED) {
@@ -108,14 +103,7 @@ void setup() {
   display1.init();
   display2.init();
 
-  // Init keypad.
-  if (keyPad.begin() == false) {
-    Serial.println("Can't communicate to keypad.");
-  }
-  else {
-    keyPad.loadKeyMap(keymap);
-    Serial.println(keyPad.getKeyPadMode());
-  }
+  keypad.init();
 
   // Init SPI and RFID.
   while(!Serial);
@@ -127,17 +115,6 @@ void setup() {
   // init_wifi();
   //readDataFromGoogleSheet();
   // post_data();
-}
-
-void keypadLoop() {
-  Wire.requestFrom(KEYPAD_ADDR, (uint8_t) 1);
-  if (!keyStillPressed && keyPad.isPressed()) {
-    char ch = keyPad.getChar();     // note we want the translated char
-    Serial.print(ch);
-    Serial.println(" pressed.");
-    display1.print(ch);
-  }
-  keyStillPressed = keyPad.isPressed();
 }
 
 void RFIDLoop() {
@@ -157,7 +134,7 @@ void RFIDLoop() {
 void loop() {
   i++;
 
-  keypadLoop();
+  keypad.loop();
   RFIDLoop();
   delay(10);
 }
