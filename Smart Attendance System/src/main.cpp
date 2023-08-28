@@ -2,18 +2,17 @@
 #include <I2CKeyPad.h>
 #include <SPI.h>
 #include <MFRC522.h>
-#include <Adafruit_GFX.h>
-#include <Adafruit_SSD1306.h>
 #include <WiFi.h>
 #include <HTTPClient.h>
 
-// Screen consts.
-const uint8_t DISPLAY_WIDTH = 128;
-const uint8_t DISPLAY_HEIGHT = 32;
-const uint8_t DISPLAY_RST = -1; // -1 means shared (whatever that means).
-const uint8_t DISPLAY_ADDR = 0x3C;
-const uint8_t DISPLAY_TEXT_SIZE = 1;
-const uint8_t DISPLAY_TEXT_COLOR = WHITE;
+#include <Display.h>
+
+const uint8_t DISPLAY1_WIDTH = 128;
+const uint8_t DISPLAY1_HEIGHT = 32;
+
+const uint8_t DISPLAY2_WIDTH = 128;
+const uint8_t DISPLAY2_HEIGHT = 16;
+
 
 const uint8_t I2C_SDA_2 = 33;
 const uint8_t I2C_SCL_2 = 32;
@@ -36,25 +35,11 @@ String GOOGLE_SCRIPT_ID = "AKfycbwE-wRd4-k9RimSp_svSTjKdhQbHha_pTppacQrqA0_s8QRC
 // Glob inits.
 MFRC522 mfrc522(RFID_SS, RFID_RST);
 I2CKeyPad keyPad(KEYPAD_ADDR);
-Adafruit_SSD1306 display1(DISPLAY_WIDTH, DISPLAY_HEIGHT, &Wire, DISPLAY_RST);
-Adafruit_SSD1306 display2(DISPLAY_WIDTH, DISPLAY_HEIGHT, &Wire1, DISPLAY_RST);
+Display display1(&Wire, DISPLAY1_WIDTH, DISPLAY1_HEIGHT);
+Display display2(&Wire1, DISPLAY2_WIDTH, DISPLAY2_HEIGHT);
 
 uint8_t i = 0;
 bool keyStillPressed = false;
-
-void initDisplay(Adafruit_SSD1306 &display, String msg){
-  if (!display.begin(SSD1306_SWITCHCAPVCC, DISPLAY_ADDR)) {
-    Serial.println(F("SSD1306 allocation failed"));
-  }
-  else {
-    display.clearDisplay();
-    display.setTextSize(DISPLAY_TEXT_SIZE);
-    display.setTextColor(DISPLAY_TEXT_COLOR);
-    display.setCursor(0, 0);
-    display.println(msg);
-    display.display();
-  }
-}
 
 void readDataFromGoogleSheet(){
   if (WiFi.status() == WL_CONNECTED) {
@@ -71,7 +56,6 @@ void readDataFromGoogleSheet(){
       Serial.println(httpCode);
       Serial.println(payload);
       display1.println(payload);
-      display1.display();
     }
     else {
       Serial.println("Error on HTTP request");
@@ -121,6 +105,9 @@ void setup() {
   Wire.setClock(400000);
   Wire1.begin(I2C_SDA_2, I2C_SCL_2, 400000);
 
+  display1.init();
+  display2.init();
+
   // Init keypad.
   if (keyPad.begin() == false) {
     Serial.println("Can't communicate to keypad.");
@@ -136,14 +123,10 @@ void setup() {
   mfrc522.PCD_Init();
   mfrc522.PCD_DumpVersionToSerial();
 
-  // Init display.
-  initDisplay(display1, "Please Enter ID:");
-  initDisplay(display2, "Display 2");
-  
   // Init Wifi
-  init_wifi();
+  // init_wifi();
   //readDataFromGoogleSheet();
-  post_data();
+  // post_data();
 }
 
 void keypadLoop() {
@@ -153,13 +136,8 @@ void keypadLoop() {
     Serial.print(ch);
     Serial.println(" pressed.");
     display1.print(ch);
-    display1.display();
   }
   keyStillPressed = keyPad.isPressed();
-}
-
-void displayLoop() {
-  display2.invertDisplay(i % 20 >= 10);
 }
 
 void RFIDLoop() {
@@ -180,7 +158,6 @@ void loop() {
   i++;
 
   keypadLoop();
-  displayLoop();
   RFIDLoop();
   delay(10);
 }
