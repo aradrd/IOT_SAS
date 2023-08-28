@@ -31,7 +31,7 @@ char keymap[17] = "147*2580369#ABCD";
 const char* ssid = "TechPublic";
 const char* password = "12345678";
 
-String GOOGLE_SCRIPT_ID = "AKfycbyfyjRTJRtvb__HXIxHdiLZaPb6LueTC0lCwghAXxoXo-QipNDTHSFzvaK-ja1I5rme";
+String GOOGLE_SCRIPT_ID = "AKfycbwE-wRd4-k9RimSp_svSTjKdhQbHha_pTppacQrqA0_s8QRCHWLDjZIl7IhHYOTQRB3";
 
 // Glob inits.
 MFRC522 mfrc522(RFID_SS, RFID_RST);
@@ -59,7 +59,7 @@ void initDisplay(Adafruit_SSD1306 &display, String msg){
 void readDataFromGoogleSheet(){
   if (WiFi.status() == WL_CONNECTED) {
     HTTPClient http;
-    String url = "https://script.google.com/macros/s/" + GOOGLE_SCRIPT_ID + "/exec?readCell";
+    String url = "https://script.google.com/macros/s/" + GOOGLE_SCRIPT_ID + "/exec";
     Serial.println("Making a request");
     Serial.println(url);
     http.begin(url.c_str()); //Specify the URL and certificate
@@ -78,6 +78,26 @@ void readDataFromGoogleSheet(){
     }
     http.end();
   }
+}
+
+void post_data(){
+  String urlFinal = "https://script.google.com/macros/s/" + GOOGLE_SCRIPT_ID + "/exec";
+
+  Serial.println("POST data to spreadsheet:");
+  Serial.println(urlFinal);
+  HTTPClient http;
+  http.begin(urlFinal.c_str());
+  http.setFollowRedirects(HTTPC_STRICT_FOLLOW_REDIRECTS);
+  // Specify content-type header
+  http.addHeader("Content-Type", "application/json");
+  // Data to send with HTTP POST
+  String httpRequestData = "{\"something\":\"elina\"}";           
+  // Send HTTP POST request
+  int httpResponseCode = http.POST(httpRequestData);
+  Serial.print("HTTP Status Code: ");
+  Serial.println(httpResponseCode);
+  String payload = http.getString();
+  Serial.println(payload);
 }
 
 void init_wifi() {
@@ -122,8 +142,8 @@ void setup() {
   
   // Init Wifi
   init_wifi();
-  readDataFromGoogleSheet();
-
+  //readDataFromGoogleSheet();
+  post_data();
 }
 
 void keypadLoop() {
