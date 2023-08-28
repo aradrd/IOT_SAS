@@ -4,6 +4,8 @@
 #include <MFRC522.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
+#include <WiFi.h>
+#include <HTTPClient.h>
 
 // Screen consts.
 const uint8_t DISPLAY_WIDTH = 128;
@@ -23,6 +25,13 @@ const uint8_t RFID_SS = 5;
 // Keypad consts (and non-const).
 const uint8_t KEYPAD_ADDR = 0x20;
 char keymap[17] = "147*2580369#ABCD";
+
+// WiFi credentials
+//const char* ssid = "Sas project";
+const char* ssid = "TechPublic";
+const char* password = "12345678";
+
+String GOOGLE_SCRIPT_ID = "AKfycbyfyjRTJRtvb__HXIxHdiLZaPb6LueTC0lCwghAXxoXo-QipNDTHSFzvaK-ja1I5rme";
 
 // Glob inits.
 MFRC522 mfrc522(RFID_SS, RFID_RST);
@@ -45,6 +54,43 @@ void initDisplay(Adafruit_SSD1306 &display, String msg){
     display.println(msg);
     display.display();
   }
+}
+
+void readDataFromGoogleSheet(){
+  if (WiFi.status() == WL_CONNECTED) {
+    HTTPClient http;
+    String url = "https://script.google.com/macros/s/" + GOOGLE_SCRIPT_ID + "/exec?readCell";
+    Serial.println("Making a request");
+    Serial.println(url);
+    http.begin(url.c_str()); //Specify the URL and certificate
+    http.setFollowRedirects(HTTPC_STRICT_FOLLOW_REDIRECTS);
+    int httpCode = http.GET();
+    String payload;
+    if (httpCode > 0) { //Check for the returning code
+      payload = http.getString();
+      Serial.println(httpCode);
+      Serial.println(payload);
+      display1.println(payload);
+      display1.display();
+    }
+    else {
+      Serial.println("Error on HTTP request");
+    }
+    http.end();
+  }
+}
+
+void init_wifi() {
+  WiFi.mode(WIFI_STA);
+  //WiFi.begin(ssid, password);
+  WiFi.begin(ssid);
+  Serial.print("Connecting to WiFi ..");
+  while (WiFi.status() != WL_CONNECTED)
+  {
+    Serial.print('.');
+    delay(1000);
+  }
+  Serial.println(WiFi.localIP());
 }
 
 void setup() {
@@ -73,6 +119,11 @@ void setup() {
   // Init display.
   initDisplay(display1, "Please Enter ID:");
   initDisplay(display2, "Display 2");
+  
+  // Init Wifi
+  init_wifi();
+  readDataFromGoogleSheet();
+
 }
 
 void keypadLoop() {
@@ -111,6 +162,5 @@ void loop() {
   keypadLoop();
   displayLoop();
   RFIDLoop();
-
   delay(10);
 }
