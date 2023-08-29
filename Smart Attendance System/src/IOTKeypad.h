@@ -21,7 +21,6 @@ public:
         else
         {
             keypad.loadKeyMap(keymap);
-            Serial.println(keypad.getKeyPadMode());
         }
     }
 

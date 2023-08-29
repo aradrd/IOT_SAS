@@ -50,8 +50,8 @@ void setup() {
   rfid.init();
 
   googleSheet.init();
-  // googleSheet.readDataFromGoogleSheet();
-  // googleSheet.post_data();
+  googleSheet.readDataFromGoogleSheet();
+  googleSheet.post_data();
 }
 
 void loop() {
