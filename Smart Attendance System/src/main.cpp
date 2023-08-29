@@ -13,8 +13,6 @@ IOTKeypad keypad(display2);
 GoogleSheet googleSheet;
 RFID rfid;
 
-uint8_t i = 0;
-
 void init_i2c() {
   Wire.begin();
   Wire.setClock(I2C_CLOCK);
@@ -45,6 +43,9 @@ void setup() {
 
 void loop() {
   keypad.tick();
-  rfid.tick();
+  String uid = rfid.tick();
+  if (uid != "") {
+    Serial.println("Found RFID: " + uid);
+  }
   delay(DELAY);
 }
