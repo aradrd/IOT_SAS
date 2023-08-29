@@ -15,7 +15,7 @@ public:
     void init(){
         init_wifi();
     }
-    
+
     void readDataFromGoogleSheet(){
         if (WiFi.status() == WL_CONNECTED) {
             HTTPClient http;
@@ -48,9 +48,9 @@ public:
         http.begin(urlFinal.c_str());
         http.setFollowRedirects(HTTPC_STRICT_FOLLOW_REDIRECTS);
         // Specify content-type header
-        http.addHeader("Content-Type", "application/json");
+        http.addHeader("Content-Type", "text/csv");
         // Data to send with HTTP POST
-        String httpRequestData = "{\"something\":\"elina\"}";           
+        String httpRequestData = "bla1,bla2,bla3";
         // Send HTTP POST request
         int httpResponseCode = http.POST(httpRequestData);
         Serial.print("HTTP Status Code: ");
