@@ -25,7 +25,7 @@ public:
         }
     }
 
-    void loop() {
+    void tick() {
         Wire.requestFrom(KEYPAD_ADDR, (uint8_t)1);
         if (!key_still_pressed && keypad.isPressed())
         {
