@@ -5,13 +5,15 @@
 #include <IOTKeypad.h>
 #include <GoogleSheet.h>
 #include <RFID.h>
+#include <IOTFiles.h>
 
 // Glob inits.
+IOTFiles files;
 Display display1(&Wire, DISPLAY1_WIDTH, DISPLAY1_HEIGHT);
 Display display2(&Wire1, DISPLAY2_WIDTH, DISPLAY2_HEIGHT);
-IOTKeypad keypad(display2);
-GoogleSheet googleSheet;
-RFID rfid;
+IOTKeypad keypad(display2, files);
+GoogleSheet googleSheet(files);
+RFID rfid(files);
 
 void init_i2c() {
   Wire.begin();
@@ -37,8 +39,8 @@ void setup() {
   rfid.init();
 
   googleSheet.init();
-  googleSheet.readDataFromGoogleSheet();
-  googleSheet.post_data();
+  // googleSheet.readDataFromGoogleSheet();
+  // googleSheet.post_data();
 }
 
 void loop() {

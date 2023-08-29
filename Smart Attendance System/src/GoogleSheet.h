@@ -4,13 +4,15 @@
 #include <string>
 #include <map>
 
-#include <Consts.h>
 #include <HTTPClient.h>
 #include <WiFi.h>
 
+#include <consts.h>
+#include <IOTFiles.h>
+
 class GoogleSheet{
 public:
-    GoogleSheet() : http(), url(get_url(GOOGLE_SCRIPT_ID)) {};
+    GoogleSheet(IOTFiles& files) : http(), url(get_url(GOOGLE_SCRIPT_ID)), files(files) {};
     GoogleSheet(const GoogleSheet&) = default;
     GoogleSheet& operator=(const GoogleSheet&) = delete;
 
@@ -62,6 +64,7 @@ public:
 private:
     HTTPClient http;
     const String url;
+    IOTFiles& files;
 
     void init_wifi() {
         WiFi.mode(WIFI_STA);

@@ -39,4 +39,8 @@ const uint8_t DISPLAY_TEXT_COLOR = WHITE;
 const uint8_t RFID_RST = 2;
 const uint8_t RFID_SS = 5;
 
+// IOTFS consts
+const String USERLIST_PATH = "/user_list.csv";
+const String ATTENDANCELOG_PATH = "/attendance_log.csv";
+
 #endif
