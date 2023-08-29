@@ -15,6 +15,7 @@
 //  5. Insert column names on your destination sheet matching the parameter names of the data you are passing in (exactly matching case)
 
 var SCRIPT_PROP = PropertiesService.getScriptProperties(); // new property service
+var LOG_ENTRY_SIZE = 3;
 
 function doGet(e) {
     return get_all_approved_users(e);
@@ -22,13 +23,11 @@ function doGet(e) {
 
 
 function doPost(e) {
-  //return ContentService.createTextOutput(JSON.stringify({ "result": "success", "someString": e.parameter["someString"] }));
   if(e.postData.contents !== undefined){
-    write_string(e.postData.contents);
+    add_log_entry(e, e.postData.contents);
     return ContentService.createTextOutput(JSON.stringify({ "result": "test", "postData": e.postData.contents}));
   }
   return ContentService.createTextOutput(JSON.stringify({ "result": "empty"}));
-  //return write_string(e.parameter["someString"]);
 }
 
 function write_string(str) {
@@ -65,13 +64,28 @@ function get_all_approved_users(e){
   return ContentService.createTextOutput(JSON.stringify({ "result": "success", "data": data }));
 }
 
-/*
-function add_log_entry(e){
+
+function add_log_entry(e, log){
   var lock = get_lock();
   var attendance_log_sheet = get_sheet(1);
+  if(log != undefined){
+    var log_arr = Utilities.parseCsv(log)[0];
+    // checks
+    if(log_arr.length == LOG_ENTRY_SIZE){
+      attendance_log_sheet.getRange(attendance_log_sheet.getLastRow() + 1, 1, 1, 3).setValues([log_arr]);
+    }
+    else{
+      Logger.log("Post request not in correct csv format");
+      return ContentService.createTextOutput(JSON.stringify({ "result": "error"}));
+    }
+  }
+  else{
+    Logger.log("Missing log from post request");
+    return ContentService.createTextOutput(JSON.stringify({ "result": "error"}));
+  }
+
   lock.releaseLock();
 }
-*/
 
 function get_lock(){
   var lock = LockService.getPublicLock();
@@ -84,79 +98,6 @@ function get_sheet(index){
   var sheet = ss.getSheets()[index];
   return sheet;
 }
-
-/*
-function handleResponse(e) {
-    
-
-    try {
-        // next set where we write the data - you could write to multiple/alternate destinations
-        
-        
-        
-        var cell;
-        // var readCell = "param5"; //FOR DEBUGGING
-        var readCell = e.parameter.readCell;
-        // Logger.log(readCell);
-        if (readCell !== undefined) { //handle read requests for single cells. in this example we are reading parameters from sheet 1
-            var param_headers = params_sheet.getRange(1, 1, params_sheet.getLastRow(), 1).getValues();//[0];
-            // Logger.log(param_headers);
-            for (i in param_headers) {
-                // Logger.log(i);
-                // Logger.log(param_headers[i]);
-                if (param_headers[i] == readCell) 
-                {
-                    var j=parseInt(i)+1; //for some reason i is a string and not an integer. 
-                    cell = params_sheet.getRange(j, 2);
-                    // Logger.log('found '+ readCell + ' value is ' +cell.getValue());
-                }
-            }
-            if (cell !== undefined) 
-            {
-                try {var cellValue = cell.getValue();}
-                catch (error) {return ContentService.createTextOutput(JSON.stringify({ "result": "error", "NoMatchingHeaderError": error }));
-            }
-
-            }
-            return ContentService
-                .createTextOutput(JSON.stringify({ "result": "success", "data": cellValue }));
-
-        }
-
-        else { //handle write requests for single row
-
-            var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
-            var nextRow = sheet.getLastRow() + 1; // get next row
-            var row = [];
-            // loop through the header columns
-            for (i in headers) {
-                if (headers[i] == "Timestamp") { // special case if you include a 'Timestamp' column
-                    row.push(Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "MMM d yyyy HH:mm:ss"));
-                } else { // else use header name to get data
-                    row.push(e.parameter[headers[i]]);
-                }
-            }
-            // more efficient to set values as [][] array than individually
-            sheet.getRange(nextRow, 1, 1, row.length).setValues([row]);
-            // return json success results
-            return ContentService
-                .createTextOutput(JSON.stringify({ "result": "success", "row": nextRow }))
-                .setMimeType(ContentService.MimeType.JSON);
-        }
-
-    }
-
-    catch (e) {
-        // if error return this
-        return ContentService
-            .createTextOutput(JSON.stringify({ "result": "error", "error": e }))
-            .setMimeType(ContentService.MimeType.JSON);
-    } finally { //release lock
-        lock.releaseLock();
-    }
-
-}
-*/
 
 function setup() {
     var doc = SpreadsheetApp.getActiveSpreadsheet();
