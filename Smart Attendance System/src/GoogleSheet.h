@@ -4,12 +4,9 @@
 #include <string>
 #include <map>
 
+#include <Consts.h>
 #include <HTTPClient.h>
 #include <WiFi.h>
-
-const String GOOGLE_SCRIPT_ID = "AKfycbwE-wRd4-k9RimSp_svSTjKdhQbHha_pTppacQrqA0_s8QRCHWLDjZIl7IhHYOTQRB3";
-
-const std::map<String, String> SSID_TO_PASS = {{"TechPublic", ""}};
 
 class GoogleSheet{
 public:

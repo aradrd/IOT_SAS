@@ -4,12 +4,8 @@
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 #include <Wire.h>
-#include <Exception>
 
-const uint8_t DISPLAY_RST = -1; // -1 means shared (whatever that means).
-const uint8_t DISPLAY_ADDR = 0x3C;
-const uint8_t DISPLAY_TEXT_SIZE = 1;
-const uint8_t DISPLAY_TEXT_COLOR = WHITE;
+#include <consts.h>
 
 class Display {
 public:

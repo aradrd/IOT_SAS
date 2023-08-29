@@ -1,21 +1,10 @@
 #include <Wire.h>
 
+#include <consts.h>
 #include <Display.h>
 #include <IOTKeypad.h>
 #include <GoogleSheet.h>
 #include <RFID.h>
-
-const uint16_t BAUD = 9600;
-const uint16_t I2C_CLOCK = 40000;
-
-const uint8_t DISPLAY1_WIDTH = 128;
-const uint8_t DISPLAY1_HEIGHT = 64;
-
-const uint8_t DISPLAY2_WIDTH = 128;
-const uint8_t DISPLAY2_HEIGHT = 32;
-
-const uint8_t I2C_SDA_2 = 33;
-const uint8_t I2C_SCL_2 = 32;
 
 // Glob inits.
 Display display1(&Wire, DISPLAY1_WIDTH, DISPLAY1_HEIGHT);
@@ -55,9 +44,7 @@ void setup() {
 }
 
 void loop() {
-  i++;
-
   keypad.tick();
   rfid.tick();
-  delay(10);
+  delay(DELAY);
 }

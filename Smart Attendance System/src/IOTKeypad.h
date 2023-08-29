@@ -1,11 +1,9 @@
 #ifndef IOT_KEYPAD_H
 #define IOT_KEYPAD_H
 
+#include <consts.h>
 #include <cstdint>
 #include <I2CKeyPad.h>
-
-const uint8_t KEYPAD_ADDR = 0x20;
-char keymap[17] = "147*2580369#ABCD";
 
 class IOTKeypad {
 public:

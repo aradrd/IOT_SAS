@@ -6,10 +6,9 @@
 
 #include <SPI.h>
 #include <MFRC522.h>
-#include <IOTExceptions.h>
 
-const uint8_t RFID_RST = 2;
-const uint8_t RFID_SS = 5;
+#include <consts.h>
+#include <IOTExceptions.h>
 
 class RFID {
 public:
