@@ -16,10 +16,6 @@ public:
     GoogleSheet(const GoogleSheet&) = default;
     GoogleSheet& operator=(const GoogleSheet&) = delete;
 
-    void init(){
-        init_wifi();
-    }
-
     void readDataFromGoogleSheet(){
         if (WiFi.status() != WL_CONNECTED) {
             throw std::runtime_error("WiFi not connected.");
@@ -65,18 +61,6 @@ private:
     HTTPClient http;
     const String url;
     IOTFiles& files;
-
-    void init_wifi() {
-        WiFi.mode(WIFI_STA);
-        WiFi.begin("TechPublic"); //TODO: Scan SSIDs.
-        Serial.print("Connecting to WiFi ..");
-        while (WiFi.status() != WL_CONNECTED)
-        {
-            Serial.print('.');
-            delay(1000);
-        }
-        Serial.println(WiFi.localIP());
-    }
 
     const String get_url(const String& google_script_id) {
         return "https://script.google.com/macros/s/" + google_script_id + "/exec";

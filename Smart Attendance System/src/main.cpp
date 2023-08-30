@@ -5,6 +5,7 @@
 #include <IOTKeypad.h>
 #include <GoogleSheet.h>
 #include <RFID.h>
+#include <IOTTime.h>
 #include <IOTFiles.h>
 
 // Glob inits.
@@ -14,6 +15,7 @@ Display display2(&Wire1, DISPLAY2_WIDTH, DISPLAY2_HEIGHT);
 IOTKeypad keypad(display2, files);
 GoogleSheet googleSheet(files);
 RFID rfid(files);
+IOTTime iotTime;
 
 void init_i2c() {
   Wire.begin();
@@ -27,16 +29,32 @@ void init_serial() {
   Serial.println("Initialized Serial.");
 }
 
+void init_wifi() {
+    WiFi.mode(WIFI_STA);
+    IPAddress dns(8,8,8,8);
+    WiFi.begin("TechPublic"); //TODO: Scan SSIDs.
+    Serial.print("Connecting to WiFi ..");
+    while (WiFi.status() != WL_CONNECTED)
+    {
+        Serial.print('.');
+        delay(1000);
+    }
+    Serial.println(WiFi.localIP());
+    Serial.println(WiFi.dnsIP());
+}
+
 void setup() {
   // Init comms.
   init_serial();
   init_i2c();
+  init_wifi();
 
   // Init componenets.
   keypad.init();
   display1.init();
   display2.init();
   rfid.init();
+  iotTime.init();
 
   googleSheet.init();
   // googleSheet.readDataFromGoogleSheet();
