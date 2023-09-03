@@ -4,13 +4,15 @@
 #include <string>
 #include <map>
 
-#include <Consts.h>
 #include <HTTPClient.h>
 #include <WiFi.h>
 
+#include <consts.h>
+#include <IOTFiles.h>
+
 class GoogleSheet{
 public:
-    GoogleSheet() : http(), url(get_url(GOOGLE_SCRIPT_ID)) {};
+    GoogleSheet(IOTFiles& files) : http(), url(get_url(GOOGLE_SCRIPT_ID)), files(files) {};
     GoogleSheet(const GoogleSheet&) = default;
     GoogleSheet& operator=(const GoogleSheet&) = delete;
 
@@ -19,7 +21,6 @@ public:
             throw std::runtime_error("WiFi not connected.");
         }
 
-        HTTPClient http;
         Serial.println("Making a request");
         Serial.println(url);
         http.begin(url.c_str()); //Specify the URL and certificate
@@ -35,6 +36,18 @@ public:
         else {
             Serial.println("Error on HTTP request");
         }
+        http.end();
+    }
+
+    void addAttendanceLogEntry(const String& entry) {
+        http.begin(url.c_str());
+        http.setFollowRedirects(HTTPC_STRICT_FOLLOW_REDIRECTS);
+        http.addHeader("Content-Type", "text/csv");
+        int httpResponseCode = http.POST(entry);
+        Serial.print("HTTP Status Code: ");
+        Serial.println(httpResponseCode);
+        String payload = http.getString();
+        Serial.println(payload);
         http.end();
     }
 
@@ -58,6 +71,7 @@ public:
 private:
     HTTPClient http;
     const String url;
+    IOTFiles& files;
 
     const String get_url(const String& google_script_id) {
         return "https://script.google.com/macros/s/" + google_script_id + "/exec";

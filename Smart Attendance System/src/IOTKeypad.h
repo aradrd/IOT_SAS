@@ -5,9 +5,11 @@
 #include <cstdint>
 #include <I2CKeyPad.h>
 
+#include <IOTFiles.h>
+
 class IOTKeypad {
 public:
-    IOTKeypad(Display& display) : keypad(KEYPAD_ADDR), display(display), key_still_pressed(false) {};
+    IOTKeypad(Display& display, IOTFiles& files) : keypad(KEYPAD_ADDR), display(display), key_still_pressed(false), files(files) {};
     IOTKeypad(const IOTKeypad&) = default;
     IOTKeypad& operator=(const IOTKeypad&) = delete;
 
@@ -38,6 +40,7 @@ private:
     I2CKeyPad keypad;
     Display& display;
     bool key_still_pressed;
+    IOTFiles& files;
 };
 
 #endif

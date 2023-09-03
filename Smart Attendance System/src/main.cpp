@@ -5,15 +5,18 @@
 #include <IOTKeypad.h>
 #include <GoogleSheet.h>
 #include <RFID.h>
+#include <IOTFiles.h>
 #include <IOTTime.h>
+#include <IOTFiles.h>
 
 // Glob inits.
+IOTTime iot_time;
+IOTFiles files(iot_time);
 Display display1(&Wire, DISPLAY1_WIDTH, DISPLAY1_HEIGHT);
 Display display2(&Wire1, DISPLAY2_WIDTH, DISPLAY2_HEIGHT);
-IOTKeypad keypad(display2);
-GoogleSheet googleSheet;
-RFID rfid;
-IOTTime iotTime;
+IOTKeypad keypad(display2, files);
+GoogleSheet googleSheet(files);
+RFID rfid(files);
 
 void init_i2c() {
   Wire.begin();
@@ -30,7 +33,7 @@ void init_serial() {
 void init_wifi() {
     WiFi.mode(WIFI_STA);
     IPAddress dns(8,8,8,8);
-    WiFi.begin("TechPublic"); //TODO: Scan SSIDs.
+    WiFi.begin("TechPublic2"); //TODO: Scan SSIDs.
     Serial.print("Connecting to WiFi ..");
     while (WiFi.status() != WL_CONNECTED)
     {
@@ -52,11 +55,11 @@ void setup() {
   display1.init();
   display2.init();
   rfid.init();
-  iotTime.init();
+  files.init();
+  iot_time.init();
 
-  iotTime.printLocalTime();
-  googleSheet.readDataFromGoogleSheet();
-  googleSheet.post_data();
+  // googleSheet.readDataFromGoogleSheet();
+  // googleSheet.post_data();
 }
 
 void loop() {
@@ -64,6 +67,13 @@ void loop() {
   String uid = rfid.tick();
   if (uid != "") {
     Serial.println("Found RFID: " + uid);
+    if (uid == "A7 48 B3 4E ") {
+      String entry = files.addAttendanceLogEntry(uid);
+      googleSheet.addAttendanceLogEntry(entry);
+    }
+    else {
+      display1.println("UID not recognized.\nHave a nice day.");
+    }
   }
   delay(DELAY);
 }
