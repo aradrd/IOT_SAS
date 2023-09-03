@@ -59,7 +59,9 @@ private:
         String uid = "";
         for (byte i = 0; i < uid_obj->size; i++) {
             uid += byteToHexString(uid_obj->uidByte[i]);
-            uid += " ";
+            if (i != uid_obj->size - 1) {
+                uid += " ";
+            }
         }
         return uid;
     }

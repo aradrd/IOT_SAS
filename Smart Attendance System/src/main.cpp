@@ -67,7 +67,7 @@ void loop() {
   String uid = rfid.tick();
   if (uid != "") {
     Serial.println("Found RFID: " + uid);
-    if (uid == "A7 48 B3 4E ") {
+    if (uid == "A7 48 B3 4E") {
       String entry = files.addAttendanceLogEntry(uid);
       googleSheet.addAttendanceLogEntry(entry);
     }
