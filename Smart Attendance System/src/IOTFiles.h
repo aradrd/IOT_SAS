@@ -5,11 +5,11 @@
 
 #include <consts.h>
 #include <IOTExceptions.h>
+#include <IOTTime.h>
 
 class IOTFiles {
 public:
-    IOTFiles() {
-        SPIFFS.begin();
+    IOTFiles(IOTTime& iot_time) : iot_time(iot_time) {
     }
     IOTFiles(const IOTFiles&) = delete;
     IOTFiles& operator=(const IOTFiles&) = delete;
@@ -17,11 +17,18 @@ public:
         SPIFFS.end();
     };
 
-    void addAttendanceLogEntry(const String& uid) {
+    void init() {
+        SPIFFS.begin();
+    }
+
+    String addAttendanceLogEntry(const String& uid) {
         String entry = uid + "," + getTimestamp();
         addEntry(ATTENDANCELOG_PATH, entry);
+
         Serial.println("Entire file:");
         Serial.println(readFile(ATTENDANCELOG_PATH));
+
+        return entry;
     }
 
     void clearAttendanceLog() {
@@ -38,9 +45,10 @@ public:
     }
 
 private:
-    String getTimestamp() const {
-        //TODO
-        return "NotImplemented";
+    IOTTime& iot_time;
+
+    String getTimestamp() {
+        return iot_time.getTime();
     }
 
     File open(const String& path, const String& mode = "r") {
@@ -58,10 +66,13 @@ private:
 
     void addEntry(const String& path, const String& entry) {
         File file = open(path, "a");
+        Serial.println("Opened file");
         int written = writeString(file, entry);
         file.close();
+        Serial.println("Closed file");
         if (written != entry.length()) {
-            throw WriteError(file.path(), written, entry.length());
+            // throw WriteError(file.path(), written, entry.length());
+            Serial.println("Write length different");
         }
     }
 

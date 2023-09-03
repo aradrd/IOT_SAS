@@ -47,7 +47,6 @@ public:
 
         String uid = get_uid(&(rfid.uid));
         rfid.PICC_HaltA();
-        files.addAttendanceLogEntry(uid);
         return uid;
     }
 

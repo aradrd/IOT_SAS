@@ -58,4 +58,12 @@ public:
     }
 };
 
+class TimeError : public std::runtime_error {
+public:
+    TimeError() : std::runtime_error(MSG) {}
+
+private:
+    const char* MSG = "Failed to get current time.";
+};
+
 #endif
