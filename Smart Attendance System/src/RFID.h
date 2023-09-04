@@ -12,11 +12,10 @@
 
 #include <consts.h>
 #include <IOTExceptions.h>
-#include <IOTFiles.h>
 
 class RFID {
 public:
-    RFID(IOTFiles& files) : rfid(RFID_SS, RFID_RST), files(files) {}
+    RFID() : rfid(RFID_SS, RFID_RST) {}
     RFID(const RFID&) = default;
     RFID& operator=(const RFID&) = delete;
     ~RFID() = default;
@@ -27,14 +26,9 @@ public:
         }
         SPI.begin();
         rfid.PCD_Init();
-        is_initialized = true;
     }
 
     String tick() {
-        if (!is_initialized) {
-            throw ComponentUninitializedException("RFID");
-        }
-
         if (!rfid.PICC_IsNewCardPresent()) {
             return "";
         }
@@ -52,8 +46,6 @@ public:
 
 private:
     MFRC522 rfid;
-    bool is_initialized = false;
-    IOTFiles& files;
 
     String get_uid(const MFRC522::Uid* const uid_obj) {
         String uid = "";

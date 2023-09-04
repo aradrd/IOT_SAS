@@ -8,15 +8,9 @@
 #include <IOTFiles.h>
 #include <IOTTime.h>
 #include <IOTFiles.h>
+#include <SmartAttendanceSystem.h>
 
-// Glob inits.
-IOTTime iot_time;
-IOTFiles files(iot_time);
-Display display1(&Wire, DISPLAY1_WIDTH, DISPLAY1_HEIGHT);
-Display display2(&Wire1, DISPLAY2_WIDTH, DISPLAY2_HEIGHT);
-IOTKeypad keypad(display2, files);
-GoogleSheet googleSheet(files);
-RFID rfid(files);
+SmartAttendanceSystem sas;
 
 void init_i2c() {
   Wire.begin();
@@ -51,29 +45,13 @@ void setup() {
   init_wifi();
 
   // Init componenets.
-  keypad.init();
-  display1.init();
-  display2.init();
-  rfid.init();
-  files.init();
-  iot_time.init();
+  sas.init();
 
   // googleSheet.readDataFromGoogleSheet();
   // googleSheet.post_data();
 }
 
 void loop() {
-  keypad.tick();
-  String uid = rfid.tick();
-  if (uid != "") {
-    Serial.println("Found RFID: " + uid);
-    if (uid == "A7 48 B3 4E") {
-      String entry = files.addAttendanceLogEntry(uid);
-      googleSheet.addAttendanceLogEntry(entry);
-    }
-    else {
-      display1.println("UID not recognized.\nHave a nice day.");
-    }
-  }
+  sas.tick();
   delay(DELAY);
 }

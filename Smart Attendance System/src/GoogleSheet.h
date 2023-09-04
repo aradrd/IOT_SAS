@@ -8,11 +8,10 @@
 #include <WiFi.h>
 
 #include <consts.h>
-#include <IOTFiles.h>
 
 class GoogleSheet{
 public:
-    GoogleSheet(IOTFiles& files) : http(), url(get_url(GOOGLE_SCRIPT_ID)), files(files) {};
+    GoogleSheet() : http(), url(get_url(GOOGLE_SCRIPT_ID)) {};
     GoogleSheet(const GoogleSheet&) = default;
     GoogleSheet& operator=(const GoogleSheet&) = delete;
 
@@ -71,7 +70,6 @@ public:
 private:
     HTTPClient http;
     const String url;
-    IOTFiles& files;
 
     const String get_url(const String& google_script_id) {
         return "https://script.google.com/macros/s/" + google_script_id + "/exec";

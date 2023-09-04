@@ -24,7 +24,7 @@ public:
         configTime(gmtOffset_sec, daylightOffset_sec, NTP_SERVER);
     }
 
-    String getTime() {
+    String getTimeStamp() {
         if (!getLocalTime(&timeinfo)) {
             Serial.println("Failed getting time");
             // throw TimeError();

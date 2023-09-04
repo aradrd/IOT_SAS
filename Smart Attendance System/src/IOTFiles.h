@@ -5,11 +5,11 @@
 
 #include <consts.h>
 #include <IOTExceptions.h>
-#include <IOTTime.h>
 
 class IOTFiles {
 public:
-    IOTFiles(IOTTime& iot_time) : iot_time(iot_time) {
+    IOTFiles() {
+        SPIFFS.begin();
     }
     IOTFiles(const IOTFiles&) = delete;
     IOTFiles& operator=(const IOTFiles&) = delete;
@@ -17,18 +17,8 @@ public:
         SPIFFS.end();
     };
 
-    void init() {
-        SPIFFS.begin();
-    }
-
-    String addAttendanceLogEntry(const String& uid) {
-        String entry = uid + "," + getTimestamp();
+    void addAttendanceLogEntry(const String& entry) {
         addEntry(ATTENDANCELOG_PATH, entry);
-
-        Serial.println("Entire file:");
-        Serial.println(readFile(ATTENDANCELOG_PATH));
-
-        return entry;
     }
 
     void clearAttendanceLog() {
@@ -45,12 +35,6 @@ public:
     }
 
 private:
-    IOTTime& iot_time;
-
-    String getTimestamp() {
-        return iot_time.getTime();
-    }
-
     File open(const String& path, const String& mode = "r") {
         File file = SPIFFS.open(path, mode.c_str());
         if (!file) {

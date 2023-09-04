@@ -9,7 +9,7 @@
 
 class IOTKeypad {
 public:
-    IOTKeypad(Display& display, IOTFiles& files) : keypad(KEYPAD_ADDR), display(display), key_still_pressed(false), files(files) {};
+    IOTKeypad() : keypad(KEYPAD_ADDR), key_still_pressed(false) {};
     IOTKeypad(const IOTKeypad&) = default;
     IOTKeypad& operator=(const IOTKeypad&) = delete;
 
@@ -24,23 +24,22 @@ public:
         }
     }
 
-    void tick() {
+    char tick() {
+        char key = '\0';
         Wire.requestFrom(KEYPAD_ADDR, (uint8_t)1);
         if (!key_still_pressed && keypad.isPressed())
         {
-            char ch = keypad.getChar(); // note we want the translated char
-            Serial.print(ch);
+            key = keypad.getChar(); // note we want the translated char
+            Serial.print(key);
             Serial.println(" pressed.");
-            display.print(ch);
         }
         key_still_pressed = keypad.isPressed();
+        return key;
     }
 
 private:
     I2CKeyPad keypad;
-    Display& display;
     bool key_still_pressed;
-    IOTFiles& files;
 };
 
 #endif
