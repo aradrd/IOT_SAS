@@ -28,7 +28,6 @@ public:
 
         display.setTextSize(DISPLAY_TEXT_SIZE);
         display.setTextColor(DISPLAY_TEXT_COLOR);
-        display.setCursor(0, 0);
         clear();
     }
 
@@ -46,6 +45,7 @@ public:
     }
 
     void clear() {
+        display.setCursor(0, 0);
         display.clearDisplay();
         display.display();
     }

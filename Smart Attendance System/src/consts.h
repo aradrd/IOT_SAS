@@ -22,7 +22,7 @@ const uint8_t I2C_SCL_2 = 32;
 const uint8_t DELAY = 10;
 
 // GoogleSheet consts
-const String GOOGLE_SCRIPT_ID = "AKfycbypB7KGCLnmazWsy2e7hzyaCU39dYhZBLqAvmDJ9nlzeU4ClT54T5G5nbSmN6y8_Go";
+const String GOOGLE_SCRIPT_ID = "AKfycbzqxFAFERQau9DFvuIWVHVk8ySXi_X75JlsON0nyMEZaiRpd0id7Kj9zkBRLrZ4XbyF";
 const std::map<String, String> SSID_TO_PASS = {{"TechPublic", ""}};
 
 // IOTKeypad consts

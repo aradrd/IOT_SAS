@@ -31,6 +31,8 @@ public:
         display[ID].init();
         rfid.init();
         time.init();
+
+        sheets.readDataFromGoogleSheet();
     }
 
     void tick() {
@@ -48,11 +50,13 @@ public:
                 sheets.addAttendanceLogEntry(entry);
             }
             else {
+                display[MSG].clear();
                 display[MSG].println("UID not recognized.\nHave a nice day.");
+                uid = "";
             }
         }
 
-        bool something_happened = key || uid;
+        bool something_happened = key != '\0' || uid != "";
         if (something_happened) {
             display[MSG].clear();
         }

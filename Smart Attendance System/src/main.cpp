@@ -46,9 +46,6 @@ void setup() {
 
   // Init componenets.
   sas.init();
-
-  // googleSheet.readDataFromGoogleSheet();
-  // googleSheet.post_data();
 }
 
 void loop() {
