@@ -29,7 +29,10 @@ public:
         Wire.requestFrom(KEYPAD_ADDR, (uint8_t)1);
         if (!key_still_pressed && keypad.isPressed())
         {
-            key = keypad.getChar(); // note we want the translated char
+            if (keypad.getKey() == I2C_KEYPAD_FAIL){
+                return key;
+            }
+            key = keypad.getLastChar(); // note we want the translated char
             Serial.print(key);
             Serial.println(" pressed.");
         }
