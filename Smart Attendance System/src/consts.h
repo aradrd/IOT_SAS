@@ -6,6 +6,8 @@
 #include <WString.h>
 #include <Adafruit_SSD1306.h>
 
+using UserList = std::vector<std::pair<String, String>>;
+
 // main consts
 const uint16_t BAUD = 9600;
 const uint16_t I2C_CLOCK = 40000;
@@ -39,5 +41,8 @@ const uint8_t RFID_SS = 5;
 // IOTFS consts
 const String USERLIST_PATH = "/user_list.csv";
 const String ATTENDANCELOG_PATH = "/attendance_log.csv";
+
+const uint16_t STACK_SIZE = 2048;
+const uint16_t JSON_SIZE = 1024;
 
 #endif

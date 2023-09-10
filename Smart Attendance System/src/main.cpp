@@ -27,7 +27,7 @@ void init_serial() {
 void init_wifi() {
     WiFi.mode(WIFI_STA);
     IPAddress dns(8,8,8,8);
-    WiFi.begin("TechPublic2"); //TODO: Scan SSIDs.
+    WiFi.begin("Vladimir Computin", "100200300"); //TODO: Scan SSIDs.
     Serial.print("Connecting to WiFi ..");
     while (WiFi.status() != WL_CONNECTED)
     {

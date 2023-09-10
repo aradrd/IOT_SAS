@@ -15,44 +15,36 @@ public:
     GoogleSheet(const GoogleSheet&) = default;
     GoogleSheet& operator=(const GoogleSheet&) = delete;
 
-    void readDataFromGoogleSheet(){
-        if (WiFi.status() != WL_CONNECTED) {
-            throw std::runtime_error("WiFi not connected.");
-        }
-
-        Serial.println("Making a request");
-        Serial.println(url);
-        http.begin(url.c_str()); //Specify the URL and certificate
-        http.setFollowRedirects(HTTPC_STRICT_FOLLOW_REDIRECTS);
+    String getUserList(){
+        establishConnection();
         int httpCode = http.GET();
         String payload;
-        if (httpCode > 0) { //Check for the returning code
+        if (httpCode > 0) {
             payload = http.getString();
             Serial.println(httpCode);
             Serial.println(payload);
-            //display1.println(payload);
         }
         else {
             Serial.println("Error on HTTP request");
         }
-        http.end();
+
+        endConnection();
+        return payload;
     }
 
     void addAttendanceLogEntry(const String& entry) {
-        http.begin(url.c_str());
-        http.setFollowRedirects(HTTPC_STRICT_FOLLOW_REDIRECTS);
+        establishConnection();
         http.addHeader("Content-Type", "text/csv");
         int httpResponseCode = http.POST(entry);
         Serial.print("HTTP Status Code: ");
         Serial.println(httpResponseCode);
         String payload = http.getString();
         Serial.println(payload);
-        http.end();
+        endConnection();
     }
 
     void post_data(){
-        http.begin(url.c_str());
-        http.setFollowRedirects(HTTPC_STRICT_FOLLOW_REDIRECTS);
+        establishConnection();
         // Specify content-type header
         http.addHeader("Content-Type", "text/csv");
         // Data to send with HTTP POST
@@ -63,13 +55,27 @@ public:
         Serial.println(httpResponseCode);
         String payload = http.getString();
         Serial.println(payload);
-        http.end();
+        endConnection();
     }
 
 
 private:
     HTTPClient http;
     const String url;
+
+    void establishConnection() {
+        if (WiFi.status() != WL_CONNECTED) {
+            Serial.println("WiFi not connected.");
+            return;
+        }
+
+        http.begin(url.c_str());
+        http.setFollowRedirects(HTTPC_STRICT_FOLLOW_REDIRECTS);
+    }
+
+    void endConnection() {
+        http.end();
+    }
 
     const String get_url(const String& google_script_id) {
         return "https://script.google.com/macros/s/" + google_script_id + "/exec";

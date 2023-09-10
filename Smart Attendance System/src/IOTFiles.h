@@ -2,6 +2,7 @@
 #define IOT_FS_H
 
 #include <SPIFFS.h>
+#include <mutex>
 
 #include <consts.h>
 #include <IOTExceptions.h>
@@ -18,11 +19,22 @@ public:
     };
 
     void addAttendanceLogEntry(const String& entry) {
+        attendance_log_mutex.lock();
         addEntry(ATTENDANCELOG_PATH, entry);
+        attendance_log_mutex.unlock();
     }
 
     void clearAttendanceLog() {
+        attendance_log_mutex.lock();
         clearFile(ATTENDANCELOG_PATH);
+        attendance_log_mutex.unlock();
+    }
+
+    void writeUserList(const UserList& user_list) {
+        clearUserList();
+        for (const auto& user : user_list) {
+            addUserEntry(user.first, user.second);
+        }
     }
 
     void clearUserList() {
@@ -35,10 +47,13 @@ public:
     }
 
 private:
+    std::mutex user_list_mutex;
+    std::mutex attendance_log_mutex;
+
     File open(const String& path, const String& mode = "r") {
         File file = SPIFFS.open(path, mode.c_str());
         if (!file) {
-            throw OpenFileError(path);
+            Serial.println("Error opening file " + path);
         }
         return file;
     }

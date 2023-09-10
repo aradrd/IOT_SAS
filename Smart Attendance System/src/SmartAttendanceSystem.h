@@ -8,13 +8,14 @@
 #include <IOTKeypad.h>
 #include <IOTTime.h>
 #include <RFID.h>
+#include <Sync.h>
 
 class SmartAttendanceSystem {
 public:
     SmartAttendanceSystem()
         : time(), files(),
           display(&Wire, DISPLAY_WIDTH, DISPLAY_HEIGHT),
-          keypad(), sheets(), rfid() {}
+          keypad(), sheets(), rfid(), sync(sheets, files) {}
     SmartAttendanceSystem(const SmartAttendanceSystem&) = delete;
     const SmartAttendanceSystem& operator=(const SmartAttendanceSystem&) = delete;
     ~SmartAttendanceSystem() = default;
@@ -24,6 +25,7 @@ public:
         display.init();
         rfid.init();
         time.init();
+        sync.sync();
     }
 
     void tick() {
@@ -54,6 +56,7 @@ private:
     IOTKeypad keypad;
     GoogleSheet sheets;
     RFID rfid;
+    Sync sync;
 
     void handleKeypress(char key) {
         display.print(key);

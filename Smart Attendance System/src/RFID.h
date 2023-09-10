@@ -22,7 +22,8 @@ public:
 
     void init() {
         if (!Serial) {
-            throw SerialUnintializedException();
+            // throw SerialUnintializedException();
+            Serial.println("Serial init error");
         }
         SPI.begin();
         rfid.PCD_Init();
