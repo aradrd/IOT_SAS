@@ -10,11 +10,8 @@
 const uint16_t BAUD = 9600;
 const uint16_t I2C_CLOCK = 40000;
 
-const uint8_t DISPLAY1_WIDTH = 128;
-const uint8_t DISPLAY1_HEIGHT = 64;
-
-const uint8_t DISPLAY2_WIDTH = 128;
-const uint8_t DISPLAY2_HEIGHT = 32;
+const uint8_t DISPLAY_WIDTH = 128;
+const uint8_t DISPLAY_HEIGHT = 64;
 
 const uint8_t I2C_SDA_2 = 33;
 const uint8_t I2C_SCL_2 = 32;
@@ -32,7 +29,7 @@ char keymap[17] = "147*2580369#ABCD";
 // Display consts
 const uint8_t DISPLAY_RST = -1; // -1 means shared (whatever that means).
 const uint8_t DISPLAY_ADDR = 0x3C;
-const uint8_t DISPLAY_TEXT_SIZE = 1;
+const uint8_t DISPLAY_TEXT_SIZE = 2;
 const uint8_t DISPLAY_TEXT_COLOR = WHITE;
 
 // RFID consts
