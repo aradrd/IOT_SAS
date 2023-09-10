@@ -21,8 +21,6 @@ public:
         String payload;
         if (httpCode > 0) {
             payload = http.getString();
-            Serial.println(httpCode);
-            Serial.println(payload);
         }
         else {
             Serial.println("Error on HTTP request");

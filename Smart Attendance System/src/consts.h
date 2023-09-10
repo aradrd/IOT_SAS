@@ -3,10 +3,18 @@
 
 #include <cstdint>
 #include <map>
+#include <vector>
+
 #include <WString.h>
 #include <Adafruit_SSD1306.h>
 
 using UserList = std::vector<std::pair<String, String>>;
+
+enum FileName {
+    ATTENDANCE_LOG,
+    USER_LIST
+};
+
 
 // main consts
 const uint16_t BAUD = 9600;

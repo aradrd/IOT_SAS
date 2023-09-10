@@ -3,9 +3,25 @@
 
 #include <SPIFFS.h>
 #include <mutex>
+#include <map>
 
 #include <consts.h>
 #include <IOTExceptions.h>
+
+enum FileLock {
+    ATTENDANCELOG_LOCK,
+    USERLIST_LOCK
+};
+
+std::map<FileName, String> FILE_TO_PATH = {
+    {ATTENDANCE_LOG, ATTENDANCELOG_PATH},
+    {USER_LIST, USERLIST_PATH}
+};
+
+std::map<FileName, uint8_t> FILE_TO_LOCK = {
+    {ATTENDANCE_LOG, ATTENDANCELOG_LOCK},
+    {USER_LIST, USERLIST_LOCK}
+};
 
 class IOTFiles {
 public:
@@ -19,38 +35,48 @@ public:
     };
 
     void addAttendanceLogEntry(const String& entry) {
-        attendance_log_mutex.lock();
-        addEntry(ATTENDANCELOG_PATH, entry);
-        attendance_log_mutex.unlock();
+        addEntry(ATTENDANCE_LOG, entry);
     }
 
     void clearAttendanceLog() {
-        attendance_log_mutex.lock();
-        clearFile(ATTENDANCELOG_PATH);
-        attendance_log_mutex.unlock();
+        clearFile(ATTENDANCE_LOG);
     }
 
     void writeUserList(const UserList& user_list) {
+        lock(USER_LIST);
         clearUserList();
         for (const auto& user : user_list) {
             addUserEntry(user.first, user.second);
         }
+        unlock(USER_LIST);
+    }
+
+    String debugReadFile(FileName file_name) {
+        return readFile(file_name);
+    }
+
+private:
+    std::mutex mutexes[2];
+
+    void lock(FileName file_name) {
+        mutexes[FILE_TO_LOCK[file_name]].lock();
+    }
+
+    void unlock(FileName file_name) {
+        mutexes[FILE_TO_LOCK[file_name]].unlock();
     }
 
     void clearUserList() {
-        clearFile(USERLIST_PATH);
+        clearFile(USER_LIST);
     }
 
     void addUserEntry(const String& id, const String& uid) {
         String entry = id + "," + uid;
-        addEntry(USERLIST_PATH, entry);
+        addEntry(USER_LIST, entry);
     }
 
-private:
-    std::mutex user_list_mutex;
-    std::mutex attendance_log_mutex;
-
-    File open(const String& path, const String& mode = "r") {
+    File open(FileName file_name, const String& mode = "r") {
+        const String& path = FILE_TO_PATH[file_name];
         File file = SPIFFS.open(path, mode.c_str());
         if (!file) {
             Serial.println("Error opening file " + path);
@@ -58,40 +84,23 @@ private:
         return file;
     }
 
-    void clearFile(const String& path) {
-        File file = open(path, "w");
+    void clearFile(FileName file_name) {
+        File file = open(file_name, "w");
         file.close();
     }
 
-    void addEntry(const String& path, const String& entry) {
-        File file = open(path, "a");
-        Serial.println("Opened file");
-        int written = writeString(file, entry);
+    void addEntry(FileName file_name, const String& entry) {
+        File file = open(file_name, "a");
+        file.println(entry);
         file.close();
-        Serial.println("Closed file");
-        if (written != entry.length()) {
-            // throw WriteError(file.path(), written, entry.length());
-            Serial.println("Write length different");
-        }
     }
 
-    int writeString(File& file, const String& str) {
-        int write_len = 0;
-        for (size_t i = 0; i < str.length(); i++) {
-            write_len += file.write(str[i]);
-        }
-        return write_len;
-    }
-
-    String readFile(const String& path) {
-        File file = open(path);
+    String readFile(FileName file_name) {
+        File file = open(file_name);
         String res;
-        size_t size = file.size();
-        res.reserve(size);
-        for (size_t i = 0; i < size; i++) {
+        while (file.available()) {
             res += static_cast<char>(file.read());
         }
-        file.close();
         return res;
     }
 };

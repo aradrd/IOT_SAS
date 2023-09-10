@@ -3,7 +3,6 @@
 
 #include <mutex>
 #include <ArduinoJson.h>
-#include <vector>
 
 #include <consts.h>
 #include <GoogleSheet.h>
@@ -36,12 +35,13 @@ private:
         String payload = sheets.getUserList();
         UserList user_list = parseUserList(payload);
         files.writeUserList(user_list);
+        Serial.println(files.debugReadFile(USER_LIST));
     }
 
     UserList parseUserList(const String& payload) {
         DynamicJsonDocument doc(JSON_SIZE);
         DeserializationError error = deserializeJson(doc, payload);
-        JsonArray data = doc["data"];
+        const JsonArray& data = doc["data"];
         UserList user_list;
         for (const JsonArray& user : data) {
             String ID = user[0];
@@ -56,8 +56,10 @@ private:
     }
 };
 
-void sync(void* sync) {
-    static_cast<Sync*>(sync)->sync();
+void sync_thread(void* sas) {
+    Serial.println("Thread started.");
+    static_cast<SmartAttendanceSystem*>(sas)->sync.sync();
+    Serial.println("Thread finished.");
     vTaskDelete(nullptr);
 }
 

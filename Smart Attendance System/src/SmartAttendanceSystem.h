@@ -25,7 +25,6 @@ public:
         display.init();
         rfid.init();
         time.init();
-        sync.sync();
     }
 
     void tick() {
@@ -47,7 +46,12 @@ public:
                 display.println("UID not recognized.\nHave a nice day.");
             }
         }
+        if (ticks % (100 * 60) == 0) {
+            xTaskCreate(sync_thread, "sync", STACK_SIZE, static_cast<void*>(this), 1, nullptr);
+        }
+        ticks++;
     }
+    Sync sync;
     
 private:
     IOTTime time;
@@ -56,7 +60,7 @@ private:
     IOTKeypad keypad;
     GoogleSheet sheets;
     RFID rfid;
-    Sync sync;
+    uint16_t ticks = 0;
 
     void handleKeypress(char key) {
         display.print(key);
