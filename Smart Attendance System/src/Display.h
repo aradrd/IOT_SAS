@@ -46,7 +46,9 @@ public:
 
     void backspace(){
         currently_displayed.remove(currently_displayed.length() - 1);
+        String temp = currently_displayed;
         clear();
+        currently_displayed = temp;
         display.print(currently_displayed);
         display.display();
     }
@@ -55,6 +57,11 @@ public:
         display.setCursor(0, 0);
         display.clearDisplay();
         display.display();
+        currently_displayed = "";
+    }
+
+    String get_currently_displayed(){
+        return currently_displayed;
     }
 
 private:

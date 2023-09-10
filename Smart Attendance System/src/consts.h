@@ -17,6 +17,7 @@ const uint8_t I2C_SDA_2 = 33;
 const uint8_t I2C_SCL_2 = 32;
 
 const uint8_t DELAY = 10;
+const uint16_t MSG_DELAY = 5000;
 
 // GoogleSheet consts
 const String GOOGLE_SCRIPT_ID = "AKfycbzqxFAFERQau9DFvuIWVHVk8ySXi_X75JlsON0nyMEZaiRpd0id7Kj9zkBRLrZ4XbyF";
@@ -25,7 +26,11 @@ const std::map<String, String> SSID_TO_PASS = {{"TechPublic", ""}};
 // IOTKeypad consts
 const uint8_t KEYPAD_ADDR = 0x20;
 char keymap[17] = "147*2580369#ABCD";
-char BACKSPACE_KEY = 'D';
+const char BACKSPACE_KEY = 'B';
+const char OK_KEY = 'A';
+const char CANCEL_KEY = 'C';
+
+const uint8_t ID_LENGTH = 9;
 
 // Display consts
 const uint8_t DISPLAY_RST = -1; // -1 means shared (whatever that means).
