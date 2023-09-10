@@ -25,6 +25,7 @@ const std::map<String, String> SSID_TO_PASS = {{"TechPublic", ""}};
 // IOTKeypad consts
 const uint8_t KEYPAD_ADDR = 0x20;
 char keymap[17] = "147*2580369#ABCD";
+char BACKSPACE_KEY = 'D';
 
 // Display consts
 const uint8_t DISPLAY_RST = -1; // -1 means shared (whatever that means).

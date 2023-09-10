@@ -56,7 +56,12 @@ private:
     RFID rfid;
 
     void handleKeypress(char key) {
-        display.print(key);
+        if(key == BACKSPACE_KEY){
+            display.backspace();
+        }
+        else{
+            display.print(key);
+        }
     }
 
     String createLogEntry(const String& uid) {
