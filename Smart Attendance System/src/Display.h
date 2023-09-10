@@ -12,8 +12,7 @@ public:
     Display(TwoWire *wire, const uint8_t width, const uint8_t height)
         : wire(wire), width(width), height(height),
           display(width, height, wire, DISPLAY_RST)
-    {
-    }
+    {}
 
     Display(const Display&) = default;
     Display& operator=(const Display&) = default;
