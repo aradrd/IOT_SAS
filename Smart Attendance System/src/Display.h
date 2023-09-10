@@ -11,7 +11,7 @@ class Display {
 public:
     Display(TwoWire *wire, const uint8_t width, const uint8_t height)
         : wire(wire), width(width), height(height),
-          display(width, height, wire, DISPLAY_RST)
+          display(width, height, wire, DISPLAY_RST), currently_displayed("")
     {}
 
     Display(const Display&) = default;
@@ -35,12 +35,20 @@ public:
     }
 
     void print(const String& str) {
+        currently_displayed.concat(str);
         display.print(str);
         display.display();
     }
 
     void println(const String& str) {
         print(str + "\n");
+    }
+
+    void backspace(){
+        currently_displayed.remove(currently_displayed.length() - 1);
+        clear();
+        display.print(currently_displayed);
+        display.display();
     }
 
     void clear() {
@@ -54,6 +62,7 @@ private:
     const uint8_t width;
     const uint8_t height;
     Adafruit_SSD1306 display;
+    String currently_displayed;
 };
 
 #endif
