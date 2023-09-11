@@ -23,7 +23,8 @@ public:
     SmartAttendanceSystem()
         : time(), files(),
           display(&Wire, DISPLAY_WIDTH, DISPLAY_HEIGHT),
-          keypad(), sheets(), rfid(), state(WAIT_FOR_CARD), is_first_digit(true) {}
+          keypad(), sheets(), rfid(), state(WAIT_FOR_CARD), is_first_digit(true),
+          uid_in_registration() {}
     SmartAttendanceSystem(const SmartAttendanceSystem&) = delete;
     const SmartAttendanceSystem& operator=(const SmartAttendanceSystem&) = delete;
     ~SmartAttendanceSystem() = default;
@@ -61,6 +62,7 @@ private:
     states state;
     bool is_first_digit;
     long start_time;
+    String uid_in_registration;
 
     String createLogEntry(const String& uid) {
         return uid + "," + time.getTimeStamp();
@@ -80,6 +82,7 @@ private:
             }
             else {
                 // card is not reistered
+                uid_in_registration = uid;
                 state = CARD_NOT_REGISTERED;
                 display.clear();
                 display.println("Press A for registration or C for cancel.");
@@ -172,6 +175,7 @@ private:
             display.clear();
             display.println("Sending registration to approval...");
             // TODO: do something with id
+            files.addPendingUserEntry(id, uid_in_registration);
             delay(MSG_DELAY);
             resetState();
         }

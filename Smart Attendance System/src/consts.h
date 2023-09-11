@@ -47,5 +47,6 @@ const uint8_t RFID_SS = 5;
 // IOTFS consts
 const String USERLIST_PATH = "/user_list.csv";
 const String ATTENDANCELOG_PATH = "/attendance_log.csv";
+const String PENDINGUSERLIST_PATH = "/pending_user_list.csv";
 
 #endif

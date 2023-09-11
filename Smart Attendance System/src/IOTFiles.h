@@ -29,9 +29,31 @@ public:
         clearFile(USERLIST_PATH);
     }
 
+    void clearPendingUserList() {
+        clearFile(PENDINGUSERLIST_PATH);
+    }
+
     void addUserEntry(const String& id, const String& uid) {
         String entry = id + "," + uid;
         addEntry(USERLIST_PATH, entry);
+    }
+
+    void addPendingUserEntry(const String& id, const String& uid){
+        String entry = id + "," + uid;
+        addEntry(PENDINGUSERLIST_PATH, entry);
+    }
+
+    // For testing
+    String readUserList(){
+        return readFile(USERLIST_PATH);
+    }
+
+    String readPendingUserList(){
+        return readFile(PENDINGUSERLIST_PATH);
+    }
+
+    String readAttendanceLog(){
+        return readFile(ATTENDANCELOG_PATH);
     }
 
 private:
