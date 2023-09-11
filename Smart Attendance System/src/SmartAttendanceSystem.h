@@ -34,7 +34,7 @@ public:
         rfid.init();
         time.init();
 
-        reset();
+        reset_state();
     }
 
     void tick() {
@@ -60,27 +60,12 @@ private:
     RFID rfid;
     states state;
     bool is_first_digit;
-
-    void handleKeypress(char key) {
-        switch(key){
-            case CANCEL_KEY:
-                reset();
-                break;
-            case '#':
-                break;
-            case '*':
-                break;
-            case 'D':
-                break;
-            default:
-                display.print(key);
-        }
-    }
+    long start_time;
 
     String createLogEntry(const String& uid) {
         return uid + "," + time.getTimeStamp();
     }
-      
+    
     void tick_wait_for_card(){
         String uid = rfid.tick();
         if (uid != "") {
@@ -98,11 +83,15 @@ private:
                 state = CARD_NOT_REGISTERED;
                 display.clear();
                 display.println("Press A for registration or C for cancel.");
+                reset_time_untouched();
             }
         }
     }
-  
+
     void tick_card_not_registerd(){
+        if(is_timeout()){
+            return;
+        }
         char key = keypad.tick();
         switch( key ){
             case '\0':
@@ -112,9 +101,10 @@ private:
                 display.clear();
                 display.println("Please enter a 9 digit ID.\nB for backspace");
                 is_first_digit = true;
+                reset_time_untouched();
                 break;
             case CANCEL_KEY:
-                reset();
+                reset_state();
                 break;
             default:
                 display.clear();
@@ -124,6 +114,9 @@ private:
     }
 
     void tick_wait_for_id(){
+        if(is_timeout()){
+            return;
+        }
         char key = keypad.tick();
 
         switch(key){
@@ -133,7 +126,17 @@ private:
                 validate_and_send_id();
                 break;
             case BACKSPACE_KEY:
+                reset_time_untouched();
                 display.backspace();
+                break;
+            case CANCEL_KEY:
+                reset_state();
+                break;
+            case '#':
+                break;
+            case '*':
+                break;
+            case 'D':
                 break;
             default:
                 if(is_first_digit){
@@ -141,9 +144,25 @@ private:
                     display.clear();
                 }
                 if (display.get_currently_displayed().length() < ID_LENGTH){
-                    handleKeypress(key);
+                    reset_time_untouched();
+                    display.print(key);
                 }
         }
+    }
+  
+    bool is_timeout(){
+        if( micros() - start_time > MICROS_TIMEOUT){
+            display.clear();
+            display.println("Timeout passed.");
+            delay(MSG_DELAY);
+            reset_state();
+            return true;
+        }
+        return false;
+    }
+    
+    void reset_time_untouched(){
+        start_time = micros();
     }
 
     void validate_and_send_id(){
@@ -154,16 +173,16 @@ private:
             display.println("Sending registration to approval...");
             // TODO: do something with id
             delay(MSG_DELAY);
-            reset();
+            reset_state();
         }
         else{
             Serial.println("ID is not valid");
             delay(MSG_DELAY);
-            reset();
+            reset_state();
         }
     }
 
-    void reset(){
+    void reset_state(){
         state = WAIT_FOR_CARD;
         display.clear();
         display.println("Please swipe card");

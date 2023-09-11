@@ -16,8 +16,10 @@ const uint8_t DISPLAY_HEIGHT = 64;
 const uint8_t I2C_SDA_2 = 33;
 const uint8_t I2C_SCL_2 = 32;
 
+// Time consts
 const uint8_t DELAY = 10;
 const uint16_t MSG_DELAY = 5000;
+const long MICROS_TIMEOUT = 1000000 * 5;
 
 // GoogleSheet consts
 const String GOOGLE_SCRIPT_ID = "AKfycbzqxFAFERQau9DFvuIWVHVk8ySXi_X75JlsON0nyMEZaiRpd0id7Kj9zkBRLrZ4XbyF";
