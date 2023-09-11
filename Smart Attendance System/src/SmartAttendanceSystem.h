@@ -34,19 +34,19 @@ public:
         rfid.init();
         time.init();
 
-        reset_state();
+        resetState();
     }
 
     void tick() {
         switch(state){
             case WAIT_FOR_CARD: 
-                tick_wait_for_card();
+                tickWaitForCard();
                 break;
             case CARD_NOT_REGISTERED: 
-                tick_card_not_registerd();
+                tickCardNotRegisterd();
                 break;
             case WAIT_FOR_ID: 
-                tick_wait_for_id();
+                tickWaitForId();
                 break;
         }
     }
@@ -66,7 +66,7 @@ private:
         return uid + "," + time.getTimeStamp();
     }
     
-    void tick_wait_for_card(){
+    void tickWaitForCard(){
         String uid = rfid.tick();
         if (uid != "") {
             Serial.println("Found RFID: " + uid);
@@ -83,13 +83,13 @@ private:
                 state = CARD_NOT_REGISTERED;
                 display.clear();
                 display.println("Press A for registration or C for cancel.");
-                reset_time_untouched();
+                resetTimeUntouched();
             }
         }
     }
 
-    void tick_card_not_registerd(){
-        if(is_timeout()){
+    void tickCardNotRegisterd(){
+        if(isTimeout()){
             return;
         }
         char key = keypad.tick();
@@ -101,10 +101,10 @@ private:
                 display.clear();
                 display.println("Please enter a 9 digit ID.\nB for backspace");
                 is_first_digit = true;
-                reset_time_untouched();
+                resetTimeUntouched();
                 break;
             case CANCEL_KEY:
-                reset_state();
+                resetState();
                 break;
             default:
                 display.clear();
@@ -113,8 +113,8 @@ private:
         }
     }
 
-    void tick_wait_for_id(){
-        if(is_timeout()){
+    void tickWaitForId(){
+        if(isTimeout()){
             return;
         }
         char key = keypad.tick();
@@ -123,14 +123,14 @@ private:
             case '\0':
                 return;
             case OK_KEY:
-                validate_and_send_id();
+                validateAndSendId();
                 break;
             case BACKSPACE_KEY:
-                reset_time_untouched();
+                resetTimeUntouched();
                 display.backspace();
                 break;
             case CANCEL_KEY:
-                reset_state();
+                resetState();
                 break;
             case '#':
                 break;
@@ -143,46 +143,46 @@ private:
                     is_first_digit = false;
                     display.clear();
                 }
-                if (display.get_currently_displayed().length() < ID_LENGTH){
-                    reset_time_untouched();
+                if (display.getDisplayed().length() < ID_LENGTH){
+                    resetTimeUntouched();
                     display.print(key);
                 }
         }
     }
   
-    bool is_timeout(){
+    bool isTimeout(){
         if( micros() - start_time > MICROS_TIMEOUT){
             display.clear();
             display.println("Timeout passed.");
             delay(MSG_DELAY);
-            reset_state();
+            resetState();
             return true;
         }
         return false;
     }
     
-    void reset_time_untouched(){
+    void resetTimeUntouched(){
         start_time = micros();
     }
 
-    void validate_and_send_id(){
-        String id = display.get_currently_displayed();
+    void validateAndSendId(){
+        String id = display.getDisplayed();
         if (id.length() == ID_LENGTH){
             Serial.println("Got " + id);
             display.clear();
             display.println("Sending registration to approval...");
             // TODO: do something with id
             delay(MSG_DELAY);
-            reset_state();
+            resetState();
         }
         else{
             Serial.println("ID is not valid");
             delay(MSG_DELAY);
-            reset_state();
+            resetState();
         }
     }
 
-    void reset_state(){
+    void resetState(){
         state = WAIT_FOR_CARD;
         display.clear();
         display.println("Please swipe card");

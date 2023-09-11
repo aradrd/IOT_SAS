@@ -60,7 +60,7 @@ public:
         currently_displayed = "";
     }
 
-    String get_currently_displayed(){
+    String getDisplayed(){
         return currently_displayed;
     }
 
