@@ -7,6 +7,7 @@
 #include <consts.h>
 #include <GoogleSheet.h>
 #include <IOTFiles.h>
+#include <SmartAttendanceSystem.h>
 
 class Sync {
 public:
@@ -58,7 +59,7 @@ private:
 
 void sync_thread(void* sas) {
     Serial.println("Thread started.");
-    static_cast<SmartAttendanceSystem*>(sas)->sync.sync();
+    static_cast<SmartAttendanceSystem*>(sas)->sync();
     Serial.println("Thread finished.");
     vTaskDelete(nullptr);
 }
