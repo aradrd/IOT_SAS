@@ -56,6 +56,15 @@ public:
         return readFile(ATTENDANCELOG_PATH);
     }
 
+    bool idExists(String id){
+        return (!getLineWithString(PENDINGUSERLIST_PATH, id).isEmpty() ||
+                !getLineWithString(USERLIST_PATH, id).isEmpty());
+    }
+
+    bool uidApproved(String uid){
+        return (!getLineWithString(USERLIST_PATH, uid).isEmpty());
+    }
+
 private:
     File open(const String& path, const String& mode = "r") {
         File file = SPIFFS.open(path, mode.c_str());
@@ -100,6 +109,28 @@ private:
         }
         file.close();
         return res;
+    }
+
+    /* Searchs for a string, line by line */
+    String getLineWithString(const String& path, const String& str){
+        File file = open(path);
+        String line;
+        size_t size = file.size();
+        line.reserve(size);
+
+        line = file.readStringUntil('\n');
+        while(!line.isEmpty()){
+            // check if line includes id
+            if(line.indexOf(str) != -1 ){
+                //found a line, return it
+                file.close();
+                return line;
+            }
+            // read next line
+            line = file.readStringUntil('\n');
+        }
+        file.close();
+        return "";
     }
 };
 

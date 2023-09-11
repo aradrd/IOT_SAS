@@ -44,7 +44,7 @@ public:
                 tickWaitForCard();
                 break;
             case CARD_NOT_REGISTERED: 
-                tickCardNotRegisterd();
+                tickCardNotRegistered();
                 break;
             case WAIT_FOR_ID: 
                 tickWaitForId();
@@ -72,16 +72,24 @@ private:
         String uid = rfid.tick();
         if (uid != "") {
             Serial.println("Found RFID: " + uid);
-            if (uid == "A7 48 B3 4E") {
-                // card is registered and approved
+            // check if approved
+            if (files.uidApproved(uid)) {
+                Serial.println("Card Approved");
+                Serial.println(files.readUserList());
+                display.blink();
                 state = CARD_APPROVED;
-                String entry = createLogEntry(uid);
-                files.addAttendanceLogEntry(entry);
-                sheets.addAttendanceLogEntry(entry);
-                state = WAIT_FOR_CARD;
+                //String entry = createLogEntry(uid);
+                //files.addAttendanceLogEntry(entry);
+                //sheets.addAttendanceLogEntry(entry);
+                resetState();
             }
-            else {
-                // card is not reistered
+            // check if waiting for approval
+            else if (files.idExists(uid)){
+                display.displayForSeconds("Card is waiting for manager approval.");
+                resetState();
+            }
+            else{
+                // card is not registered
                 uid_in_registration = uid;
                 state = CARD_NOT_REGISTERED;
                 display.clear();
@@ -91,7 +99,7 @@ private:
         }
     }
 
-    void tickCardNotRegisterd(){
+    void tickCardNotRegistered(){
         if(isTimeout()){
             return;
         }
@@ -155,9 +163,7 @@ private:
   
     bool isTimeout(){
         if( micros() - start_time > MICROS_TIMEOUT){
-            display.clear();
-            display.println("Timeout passed.");
-            delay(MSG_DELAY);
+            display.displayForSeconds("Timeout passed.");
             resetState();
             return true;
         }
@@ -171,17 +177,22 @@ private:
     void validateAndSendId(){
         String id = display.getDisplayed();
         if (id.length() == ID_LENGTH){
-            Serial.println("Got " + id);
-            display.clear();
-            display.println("Sending registration to approval...");
-            // TODO: do something with id
-            files.addPendingUserEntry(id, uid_in_registration);
-            delay(MSG_DELAY);
-            resetState();
+            // check if ID already exists
+            if(files.idExists(id)){
+                display.displayForSeconds("Id already registered to another card.");
+                resetState();
+            }
+            else{
+                files.addPendingUserEntry(id, uid_in_registration);
+                Serial.println("Got " + id);
+                display.displayForSeconds("Sending registration to approval...");
+                resetState();
+                //TODO - remove, for testing
+                Serial.println(files.readPendingUserList());
+            }
         }
         else{
-            Serial.println("ID is not valid");
-            delay(MSG_DELAY);
+            display.displayForSeconds("ID is not valid");
             resetState();
         }
     }

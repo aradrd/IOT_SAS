@@ -19,6 +19,7 @@ const uint8_t I2C_SCL_2 = 32;
 // Time consts
 const uint8_t DELAY = 10;
 const uint16_t MSG_DELAY = 5000;
+const uint16_t DISPLAY_BLINK_DELAY = 600;
 const long MICROS_TIMEOUT = 1000000 * 5;
 
 // GoogleSheet consts

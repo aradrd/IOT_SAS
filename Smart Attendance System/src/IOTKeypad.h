@@ -32,9 +32,9 @@ public:
             if (keypad.getKey() == I2C_KEYPAD_FAIL){
                 return key;
             }
-            key = keypad.getLastChar(); // note we want the translated char
-            Serial.print(key);
-            Serial.println(" pressed.");
+            key = keypad.getLastChar(); // note we want the translated char    
+            //Serial.print(key);
+            //Serial.println(" pressed.");
         }
         key_still_pressed = keypad.isPressed();
         return key;

@@ -64,6 +64,19 @@ public:
         return currently_displayed;
     }
 
+    void displayForSeconds(const String& str){
+        clear();
+        println(str);
+        delay(MSG_DELAY); // TODO - delay is not good, do with timer
+    }
+
+    void blink(){
+        clear();
+        display.invertDisplay(true);
+        delay(DISPLAY_BLINK_DELAY); // TODO - delay is not good, do with timer
+        display.invertDisplay(false);
+    }
+
 private:
     TwoWire* wire;
     const uint8_t width;
