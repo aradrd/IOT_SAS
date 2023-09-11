@@ -15,32 +15,25 @@
 //  5. Insert column names on your destination sheet matching the parameter names of the data you are passing in (exactly matching case)
 
 var SCRIPT_PROP = PropertiesService.getScriptProperties(); // new property service
-var LOG_ENTRY_SIZE = 3;
+var LOG_ENTRY_SIZE = 2;
+var USER_INFO_SIZE = 2;
 
 function doGet(e) {
     return get_all_approved_users(e);
 }
 
-
 function doPost(e) {
   if(e.postData.contents !== undefined){
-    add_log_entry(e, e.postData.contents);
+    if(e.parameter.add_user !== undefined){
+      add_pending_user(e.postData.contents);
+    }
+    if(e.parameter.add_log !== undefined){
+      add_log_entry(e.postData.contents);
+    }
     return ContentService.createTextOutput(JSON.stringify({ "result": "test", "postData": e.postData.contents}));
   }
   return ContentService.createTextOutput(JSON.stringify({ "result": "empty"}));
 }
-
-function write_string(str) {
-  Logger.log("Received " + str);
-  Logger.log("Supposedly wrote it");
-  var lock = get_lock();
-  var sheet = get_sheet(1);
-  var cell = sheet.getRange("D1");
-  cell.setValue(str);
-  Logger.log("After setvalue");
-  lock.releaseLock();
-}
-
 
 function isApproved(arr) {
   return arr[2] == "V";
@@ -59,20 +52,53 @@ function get_all_approved_users(e){
   }
 
   var data = values.filter(isApproved);
+  data.forEach(remove_v);
   Logger.log(data);
   lock.releaseLock();
   return ContentService.createTextOutput(JSON.stringify({ "result": "success", "data": data }));
 }
 
+function remove_v(value){
+  value.splice(2,1);
+}
 
-function add_log_entry(e, log){
+function add_pending_user(user_info){
+  var lock = get_lock();
+  var user_list_sheet = get_sheet(0);
+  if(user_info != undefined){ 
+    var user_info_arr = Utilities.parseCsv(user_info)[0];
+    if(user_info_arr.length == USER_INFO_SIZE){
+      var user_id = user_info_arr[0];
+      var user_uid = user_info_arr[1];
+      var row = user_list_sheet.getLastRow() + 1;
+      user_list_sheet.getRange(row, 1, 1, 2).setValues([[user_id, user_uid]]);
+    }
+    else{
+      Logger.log("Post request not in correct csv format");
+      return ContentService.createTextOutput(JSON.stringify({ "result": "error"}));
+    }
+  }
+  else{
+    Logger.log("Missing user info from post request");
+    return ContentService.createTextOutput(JSON.stringify({ "result": "error"}));
+  }
+  lock.releaseLock();
+}
+
+function add_log_entry(log){
   var lock = get_lock();
   var attendance_log_sheet = get_sheet(1);
+  var user_list_sheet = get_sheet(0);
   if(log != undefined){
     var log_arr = Utilities.parseCsv(log)[0];
+    var user_uid = log_arr[0];
     // checks
     if(log_arr.length == LOG_ENTRY_SIZE){
-      attendance_log_sheet.getRange(attendance_log_sheet.getLastRow() + 1, 1, 1, 3).setValues([log_arr]);
+      var row = attendance_log_sheet.getLastRow() + 1;
+      attendance_log_sheet.getRange(row, 2, 1, 2).setValues([log_arr]);
+      var user_id_index = user_list_sheet.getRange(1,2,user_list_sheet.getLastRow()).createTextFinder(user_uid).matchCase(false).findNext();
+      var user_id = user_list_sheet.getRange(user_id_index.getRow(), 1).getValue();
+      attendance_log_sheet.getRange(row, 1).setValue(user_id);
     }
     else{
       Logger.log("Post request not in correct csv format");
