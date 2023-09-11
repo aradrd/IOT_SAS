@@ -42,7 +42,7 @@ void setup() {
   // Init comms.
   init_serial();
   init_i2c();
-  //init_wifi();
+  init_wifi();
 
   // Init componenets.
   sas.init();

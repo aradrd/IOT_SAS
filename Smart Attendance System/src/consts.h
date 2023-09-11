@@ -23,8 +23,10 @@ const uint16_t DISPLAY_BLINK_DELAY = 600;
 const long MICROS_TIMEOUT = 1000000 * 5;
 
 // GoogleSheet consts
-const String GOOGLE_SCRIPT_ID = "AKfycbzqxFAFERQau9DFvuIWVHVk8ySXi_X75JlsON0nyMEZaiRpd0id7Kj9zkBRLrZ4XbyF";
+const String GOOGLE_SCRIPT_ID = "AKfycbzE8IPywZ4JZX8lW8QTtwRgsg_tuVKGIvanwMCMYfgN-w_Vw7_8BinpSFXwZo7WfGE";
 const std::map<String, String> SSID_TO_PASS = {{"TechPublic", ""}};
+const String ADD_USER = "add_user";
+const String ADD_LOG = "add_log";
 
 // IOTKeypad consts
 const uint8_t KEYPAD_ADDR = 0x20;

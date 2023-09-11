@@ -35,6 +35,7 @@ public:
         rfid.init();
         time.init();
 
+        files.clearPendingUserList();
         resetState();
     }
 
@@ -78,9 +79,9 @@ private:
                 Serial.println(files.readUserList());
                 display.blink();
                 state = CARD_APPROVED;
-                //String entry = createLogEntry(uid);
-                //files.addAttendanceLogEntry(entry);
-                //sheets.addAttendanceLogEntry(entry);
+                String entry = createLogEntry(uid);
+                files.addAttendanceLogEntry(entry);
+                sheets.addAttendanceLogEntry(entry);
                 resetState();
             }
             // check if waiting for approval
@@ -186,6 +187,7 @@ private:
                 files.addPendingUserEntry(id, uid_in_registration);
                 Serial.println("Got " + id);
                 display.displayForSeconds("Sending registration to approval...");
+                sheets.addPendingUserEntry(id + "," + uid_in_registration);
                 resetState();
                 //TODO - remove, for testing
                 Serial.println(files.readPendingUserList());
