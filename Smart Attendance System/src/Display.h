@@ -48,9 +48,8 @@ public:
         currently_displayed.remove(currently_displayed.length() - 1);
         String temp = currently_displayed;
         clear();
-        currently_displayed = temp;
-        display.print(currently_displayed);
-        display.display();
+        currently_displayed = "";
+        print(temp);
     }
 
     void clear() {
