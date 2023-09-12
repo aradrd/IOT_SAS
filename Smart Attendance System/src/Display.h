@@ -63,10 +63,10 @@ public:
         return currently_displayed;
     }
 
-    void displayForSeconds(const String& str){
+    void displayWithDelay(const String& str, const uint16_t to_delay=MSG_DELAY){
         clear();
         println(str);
-        delay(MSG_DELAY); // TODO - delay is not good, do with timer
+        delay(to_delay); // TODO - delay is not good, do with timer
     }
 
     void blink(){

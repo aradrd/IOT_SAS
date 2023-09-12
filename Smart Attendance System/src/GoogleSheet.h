@@ -30,7 +30,6 @@ public:
             payload = http.getString();
             Serial.println(httpCode);
             Serial.println(payload);
-            //display1.println(payload);
         }
         else {
             Serial.println("Error on HTTP request");

@@ -86,7 +86,7 @@ private:
             }
             // check if waiting for approval
             else if (files.idExists(uid)){
-                display.displayForSeconds("Card is waiting for manager approval.");
+                display.displayWithDelay(WAITING_FOR_APPROVAL);
                 resetState();
             }
             else{
@@ -94,7 +94,7 @@ private:
                 uid_in_registration = uid;
                 state = CARD_NOT_REGISTERED;
                 display.clear();
-                display.println("Press A for registration or C for cancel.");
+                display.println(REGISTER_MENU);
                 resetTimeUntouched();
             }
         }
@@ -111,7 +111,7 @@ private:
             case OK_KEY:
                 state = WAIT_FOR_ID;
                 display.clear();
-                display.println("Please enter a 9 digit ID.\nB for backspace");
+                display.println(ENTER_ID);
                 is_first_digit = true;
                 resetTimeUntouched();
                 break;
@@ -120,7 +120,10 @@ private:
                 break;
             default:
                 display.clear();
-                display.println("Wrong key.\nPress A for registration or C for cancel.");
+                display.displayWithDelay(INVALID_KEY, SHORT_MSG_DELAY);
+                display.clear();
+                display.println(REGISTER_MENU);
+                resetTimeUntouched();
                 break;
         }
     }
@@ -164,7 +167,7 @@ private:
   
     bool isTimeout(){
         if( micros() - start_time > MICROS_TIMEOUT){
-            display.displayForSeconds("Timeout passed.");
+            display.displayWithDelay(TIMEOUT, SHORT_MSG_DELAY);
             resetState();
             return true;
         }
@@ -180,13 +183,13 @@ private:
         if (id.length() == ID_LENGTH){
             // check if ID already exists
             if(files.idExists(id)){
-                display.displayForSeconds("Id already registered to another card.");
+                display.displayWithDelay(ID_TAKEN);
                 resetState();
             }
             else{
                 files.addPendingUserEntry(id, uid_in_registration);
                 Serial.println("Got " + id);
-                display.displayForSeconds("Sending registration to approval...");
+                display.displayWithDelay(SENDING_USER_INFO);
                 sheets.addPendingUserEntry(id + "," + uid_in_registration);
                 resetState();
                 //TODO - remove, for testing
@@ -194,7 +197,7 @@ private:
             }
         }
         else{
-            display.displayForSeconds("ID is not valid");
+            display.displayWithDelay(ID_NOT_VALID, SHORT_MSG_DELAY);
             resetState();
         }
     }
@@ -202,7 +205,7 @@ private:
     void resetState(){
         state = WAIT_FOR_CARD;
         display.clear();
-        display.println("Please swipe card");
+        display.println(SWIPE_CARD);
     }
 
 };
