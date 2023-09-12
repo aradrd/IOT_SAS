@@ -35,7 +35,6 @@ public:
         rfid.init();
         time.init();
 
-        files.clearPendingUserList();
         resetState();
     }
 
@@ -192,8 +191,6 @@ private:
                 display.displayWithDelay(SENDING_USER_INFO);
                 sheets.addPendingUserEntry(id + "," + uid_in_registration);
                 resetState();
-                //TODO - remove, for testing
-                Serial.println(files.readPendingUserList());
             }
         }
         else{
