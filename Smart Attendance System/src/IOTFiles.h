@@ -9,7 +9,8 @@
 
 enum FileLock {
     ATTENDANCELOG_LOCK,
-    USERLIST_LOCK
+    USERLIST_LOCK,
+    PENDINGUSERLIST_LOCK,
 };
 
 class IOTFiles {
@@ -28,74 +29,31 @@ public:
     void writeUserList(const UserList& user_list);
     String debugReadFile(FileName file_name);
 
-    void clearPendingUserList() {
-        clearFile(PENDING_USER_LIST);
-    }
+    void clearPendingUserList();
+    void addPendingUserEntry(const String& id, const String& uid);
 
-    void addUserEntry(const String& id, const String& uid) {
-        String entry = id + "," + uid;
-        addEntry(USER_LIST, entry);
-    }
-
-    void addPendingUserEntry(const String& id, const String& uid){
-        String entry = id + "," + uid;
-        addEntry(PENDING_USER_LIST, entry);
-    }
+   std::vector<String> getChanges(FileName file_name, uint16_t from_line);
 
     // For testing
-    String readUserList(){
-        return readFile(USER_LIST);
-    }
-
-    String readPendingUserList(){
-        return readFile(PENDING_USER_LIST);
-    }
-
-    String readAttendanceLog(){
-        return readFile(ATTENDANCE_LOG);
-    }
-
-    bool idExists(String id){
-        return (!getLineWithString(PENDING_USER_LIST, id).isEmpty() ||
-                !getLineWithString(USER_LIST, id).isEmpty());
-    }
-
-    bool uidApproved(String uid){
-        return (!getLineWithString(USER_LIST, uid).isEmpty());
-    }
+    String readUserList();
+    String readPendingUserList();
+    String readAttendanceLog();
+    bool idExists(const String& id);
+    bool uidApproved(const String& uid);
 
 private:
-    std::mutex mutexes[2];
+    std::mutex mutexes[AMOUNT_OF_FILES];
 
     void lock(FileName file_name);
     void unlock(FileName file_name);
     void clearUserList();
-    void addUserEntry(const String& id, const String& uid);
     File open(FileName file_name, const String& mode = "r");
     void clearFile(FileName file_name);
-    void addEntry(FileName file_name, const String& entry);
+    void addEntry(FileName file_name, const String& entry, const bool is_locked = false);
+    void addEntry(FileName file_name, const String& id, const String& uid, const bool is_locked = false);
     String readFile(FileName file_name);
-
-    String getLineWithString(FileName file_name, const String& str){
-        File file = open(file_name);
-        String line;
-        size_t size = file.size();
-        line.reserve(size);
-
-        line = file.readStringUntil('\n');
-        while(!line.isEmpty()){
-            // check if line includes id
-            if(line.indexOf(str) != -1 ){
-                //found a line, return it
-                file.close();
-                return line;
-            }
-            // read next line
-            line = file.readStringUntil('\n');
-        }
-        file.close();
-        return "";
-    }
+    String getLineWithString(FileName file_name, const String& str);
+    String createUserEntry(const String& id, const String& uid);
 };
 
 #endif
