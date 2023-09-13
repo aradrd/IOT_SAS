@@ -49,7 +49,7 @@ const uint8_t RFID_SS = 5;
 const String USERLIST_PATH = "/user_list.csv";
 const String ATTENDANCELOG_PATH = "/attendance_log.csv";
 
-const uint16_t STACK_SIZE = 2048;
+const uint16_t STACK_SIZE = 8192;
 const uint16_t JSON_SIZE = 1024;
 
 #endif

@@ -3,6 +3,7 @@
 
 void Sync::sync() {
     if (!mutex.try_lock()) {
+        Serial.println("Thread already running.");
         return;
     }
 

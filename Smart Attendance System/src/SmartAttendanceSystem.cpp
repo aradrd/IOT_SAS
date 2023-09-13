@@ -28,7 +28,7 @@ void SmartAttendanceSystem::tick() {
             display.println("UID not recognized.\nHave a nice day.");
         }
     }
-    if (ticks % (100 * 60) == 0) {
+    if (ticks % (100) == 0) {
         xTaskCreate(sync_thread, "sync", STACK_SIZE, static_cast<void*>(this), 1, nullptr);
     }
     ticks++;
