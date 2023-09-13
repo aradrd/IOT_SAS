@@ -1,13 +1,6 @@
 #include <Wire.h>
 
 #include <consts.h>
-#include <Display.h>
-#include <IOTKeypad.h>
-#include <GoogleSheet.h>
-#include <RFID.h>
-#include <IOTFiles.h>
-#include <IOTTime.h>
-#include <IOTFiles.h>
 #include <SmartAttendanceSystem.h>
 
 SmartAttendanceSystem sas;

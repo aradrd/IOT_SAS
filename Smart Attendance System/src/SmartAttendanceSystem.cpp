@@ -1,5 +1,7 @@
 #include <SmartAttendanceSystem.h>
 
+void sync_thread(void*);
+
 void SmartAttendanceSystem::init() {
     keypad.init();
     display.init();
@@ -32,7 +34,7 @@ void SmartAttendanceSystem::tick() {
     ticks++;
 }
 
-void SmartAttendanceSystem::sync() {
+void SmartAttendanceSystem::initiate_sync() {
     sync.sync();
 }
 
@@ -42,4 +44,11 @@ void SmartAttendanceSystem::handleKeypress(char key) {
 
 String SmartAttendanceSystem::createLogEntry(const String& uid) {
     return uid + "," + time.getTimeStamp();
+}
+
+void sync_thread(void* sas) {
+    Serial.println("Thread started.");
+    static_cast<SmartAttendanceSystem*>(sas)->initiate_sync();
+    Serial.println("Thread finished.");
+    vTaskDelete(nullptr);
 }

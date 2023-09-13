@@ -22,7 +22,7 @@ public:
 
     void init();
     void tick();
-    void sync();
+    void initiate_sync();
     
 private:
     IOTTime time;
