@@ -11,7 +11,7 @@ class Display {
 public:
     Display(TwoWire *wire, const uint8_t width, const uint8_t height)
         : wire(wire), width(width), height(height),
-          display(width, height, wire, DISPLAY_RST)
+          display(width, height, wire, DISPLAY_RST), currently_displayed("")
     {}
 
     Display(const Display&) = default;
@@ -35,6 +35,7 @@ public:
     }
 
     void print(const String& str) {
+        currently_displayed.concat(str);
         display.print(str);
         display.display();
     }
@@ -43,10 +44,36 @@ public:
         print(str + "\n");
     }
 
+    void backspace(){
+        currently_displayed.remove(currently_displayed.length() - 1);
+        String temp = currently_displayed;
+        clear();
+        currently_displayed = "";
+        print(temp);
+    }
+
     void clear() {
         display.setCursor(0, 0);
         display.clearDisplay();
         display.display();
+        currently_displayed = "";
+    }
+
+    String getDisplayed(){
+        return currently_displayed;
+    }
+
+    void displayWithDelay(const String& str, const uint16_t to_delay=MSG_DELAY){
+        clear();
+        println(str);
+        delay(to_delay); // TODO - delay is not good, do with timer
+    }
+
+    void blink(){
+        clear();
+        display.invertDisplay(true);
+        delay(DISPLAY_BLINK_DELAY); // TODO - delay is not good, do with timer
+        display.invertDisplay(false);
     }
 
 private:
@@ -54,6 +81,7 @@ private:
     const uint8_t width;
     const uint8_t height;
     Adafruit_SSD1306 display;
+    String currently_displayed;
 };
 
 #endif

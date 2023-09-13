@@ -31,31 +31,12 @@ public:
     }
 
     void addAttendanceLogEntry(const String& entry) {
-        establishConnection();
-        http.addHeader("Content-Type", "text/csv");
-        int httpResponseCode = http.POST(entry);
-        Serial.print("HTTP Status Code: ");
-        Serial.println(httpResponseCode);
-        String payload = http.getString();
-        Serial.println(payload);
-        endConnection();
+        postData(entry ,url + "?" + ADD_LOG);
     }
 
-    void post_data(){
-        establishConnection();
-        // Specify content-type header
-        http.addHeader("Content-Type", "text/csv");
-        // Data to send with HTTP POST
-        String httpRequestData = "bla1,bla2,bla3";
-        // Send HTTP POST request
-        int httpResponseCode = http.POST(httpRequestData);
-        Serial.print("HTTP Status Code: ");
-        Serial.println(httpResponseCode);
-        String payload = http.getString();
-        Serial.println(payload);
-        endConnection();
+    void addPendingUserEntry(const String& user) {
+        postData(user ,url + "?" + ADD_USER);
     }
-
 
 private:
     HTTPClient http;
@@ -77,6 +58,17 @@ private:
 
     const String get_url(const String& google_script_id) {
         return "https://script.google.com/macros/s/" + google_script_id + "/exec";
+    }
+
+    void postData(const String& data, const String& post_url){
+        establishConnection();
+        http.addHeader("Content-Type", "text/csv");
+        int httpResponseCode = http.POST(data);
+        Serial.print("HTTP Status Code: ");
+        Serial.println(httpResponseCode);
+        String payload = http.getString();
+        Serial.println(payload);
+        endConnection();
     }
 };
 
