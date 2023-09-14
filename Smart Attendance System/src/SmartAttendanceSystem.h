@@ -57,6 +57,7 @@ private:
     void validateAndSendId();
     void resetState();
     void callSync();
+    void factoryReset();
 };
 
 #endif

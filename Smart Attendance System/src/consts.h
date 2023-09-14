@@ -38,7 +38,7 @@ const uint8_t DELAY = 10;
 const uint16_t MSG_DELAY = 5000;
 const uint16_t SHORT_MSG_DELAY = 1000;
 const uint16_t DISPLAY_BLINK_DELAY = 600;
-const uint16_t MILLIS_TIMEOUT = 1000 * 5;
+const uint16_t MILLIS_TIMEOUT = 1000 * 30;
 
 // GoogleSheet consts
 const String GOOGLE_SCRIPT_ID = "AKfycbzE8IPywZ4JZX8lW8QTtwRgsg_tuVKGIvanwMCMYfgN-w_Vw7_8BinpSFXwZo7WfGE";

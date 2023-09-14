@@ -16,7 +16,6 @@ public:
     GoogleSheet& operator=(const GoogleSheet&) = delete;
 
     String getUserList();
-    bool postEntry(FileName file_name, const String& entry);
     uint16_t postChanges(FileName file_name, const std::vector<String>& pending_changes);
 
 private:
@@ -27,6 +26,9 @@ private:
     void endConnection();
     const String get_url(const String& google_script_id);
     bool postData(const String& data, const String& post_url);
+    String getPostUrl(FileName file_name);
+    bool postMultiEntries(FileName file_name, const std::vector<String>& entries);
+    bool postEntry(FileName file_name, const String& entry); // Slow.
 };
 
 #endif

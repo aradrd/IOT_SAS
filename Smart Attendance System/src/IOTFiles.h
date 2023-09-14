@@ -34,6 +34,8 @@ public:
 
    std::vector<String> getChanges(FileName file_name, uint16_t from_line);
 
+   void clearAllFiles();
+
     // For testing
     String readUserList();
     String readPendingUserList();

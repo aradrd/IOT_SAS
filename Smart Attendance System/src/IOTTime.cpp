@@ -5,7 +5,7 @@
 const uint8_t TIMESTAMP_BUFFER_SIZE = 80;
 const char* TIMESTAMP_FORMAT = "%Y/%m/%d %H:%M:%S";
 const char* NTP_SERVER = "time.google.com";
-const long  gmtOffset_sec = 3600;
+const long  gmtOffset_sec = 2 * 3600;
 const int   daylightOffset_sec = 3600;
 
 void IOTTime::init() {

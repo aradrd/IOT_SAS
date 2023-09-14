@@ -7,6 +7,7 @@ void SmartAttendanceSystem::init() {
     display.init();
     rfid.init();
     time.init();
+    sync.init();
 
     callSync();
     resetState();
@@ -40,9 +41,26 @@ void SmartAttendanceSystem::callSync() {
     xTaskCreate(sync_thread, "sync", STACK_SIZE, static_cast<void*>(&sync), 1, nullptr);
 }
 
+void SmartAttendanceSystem::factoryReset() {
+    files.clearAllFiles();
+    sync.clearSyncStatus();
+}
+
 void SmartAttendanceSystem::tickWaitForCard(){
     if (millis() - last_sync_call > 1000 * 120) {
         callSync();
+    }
+
+    // TODO: For debugging, remove later.
+    char key = keypad.tick();
+    if (key == 'C') {
+        factoryReset();
+    }
+    else if (key == 'D') {
+        callSync();
+    }
+    else if (key == 'B') {
+        sync.clearSyncStatus();
     }
 
     String uid = rfid.tick();

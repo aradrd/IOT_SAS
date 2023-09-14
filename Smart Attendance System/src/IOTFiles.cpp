@@ -56,6 +56,15 @@ File IOTFiles::open(FileName file_name, const String& mode) {
     return file;
 }
 
+void IOTFiles::clearAllFiles() {
+    if (!SPIFFS.format()) {
+        Serial.println("Format failed...");
+    }
+    else {
+        Serial.println("Successfully formatted SPIFFS.");
+    }
+}
+
 void IOTFiles::clearFile(FileName file_name) {
     File file = open(file_name, "w");
     file.close();

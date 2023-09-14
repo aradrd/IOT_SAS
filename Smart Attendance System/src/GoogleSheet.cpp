@@ -21,7 +21,19 @@ String GoogleSheet::getUserList(){
 }
 
 bool GoogleSheet::postEntry(FileName file_name, const String& entry) {
-    return postData(entry, url + "?" + FILE_TO_POST_EXTENSION.at(file_name));
+    return postMultiEntries(file_name, std::vector<String>({entry}));
+}
+
+String GoogleSheet::getPostUrl(FileName file_name) {
+    return url + "?" + FILE_TO_POST_EXTENSION.at(file_name);
+}
+
+bool GoogleSheet::postMultiEntries(FileName file_name, const std::vector<String>& entries) {
+    String data = "";
+    for (const auto& entry : entries) {
+        data += entry + "\n";
+    }
+    return postData(data, getPostUrl(file_name));
 }
 
 void GoogleSheet::establishConnection() {
@@ -55,15 +67,6 @@ bool GoogleSheet::postData(const String& data, const String& post_url){
 }
 
 uint16_t GoogleSheet::postChanges(FileName file_name, const std::vector<String>& pending_changes) {
-    uint16_t sent = 0;
-    for (const auto& entry : pending_changes) {
-        if (!postEntry(file_name, entry)) {
-            Serial.println("Failed sending, aborting...");
-            break;
-        }
-        
-        sent++;
-    }
-
-    return sent;
+    bool res = postMultiEntries(file_name, pending_changes);
+    return res * pending_changes.size();
 }
