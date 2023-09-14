@@ -41,7 +41,7 @@ const uint16_t DISPLAY_BLINK_DELAY = 600;
 const uint16_t MILLIS_TIMEOUT = 1000 * 30;
 
 // GoogleSheet consts
-const String GOOGLE_SCRIPT_ID = "AKfycbzE8IPywZ4JZX8lW8QTtwRgsg_tuVKGIvanwMCMYfgN-w_Vw7_8BinpSFXwZo7WfGE";
+const String GOOGLE_SCRIPT_ID = "AKfycbytLg8hCkqzslMWGNK8a5_D73Mf4a8oV5EJRi0vOv3bULGGsuRP2UDLwPtrCGhqobB5";
 const std::map<String, String> SSID_TO_PASS = {{"Vladimir Computin", "100200300"}};
 const String ADD_USER = "add_user";
 const String ADD_LOG = "add_log";

@@ -29,20 +29,24 @@ String GoogleSheet::getPostUrl(FileName file_name) {
 }
 
 bool GoogleSheet::postMultiEntries(FileName file_name, const std::vector<String>& entries) {
-    String data = "";
     for (const auto& entry : entries) {
-        data += entry + "\n";
+        postData(entry, getPostUrl(file_name));
     }
-    return postData(data, getPostUrl(file_name));
+    return false;
+    // return postData(data, getPostUrl(file_name));
 }
 
-void GoogleSheet::establishConnection() {
+void GoogleSheet::establishConnection(const String& post_ext) {
     if (WiFi.status() != WL_CONNECTED) {
         Serial.println("WiFi not connected.");
         return;
     }
 
-    http.begin(url.c_str());
+    String final_url = url;
+    if (post_ext) {
+        final_url += "?" + post_ext;
+    }
+    http.begin(final_url.c_str());
     http.setFollowRedirects(HTTPC_STRICT_FOLLOW_REDIRECTS);
 }
 

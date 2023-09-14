@@ -22,7 +22,7 @@ private:
     HTTPClient http;
     const String url;
 
-    void establishConnection();
+    void establishConnection(const String& url = url);
     void endConnection();
     const String get_url(const String& google_script_id);
     bool postData(const String& data, const String& post_url);

@@ -156,7 +156,19 @@ std::vector<String> IOTFiles::getChanges(FileName file_name, uint16_t from_line)
 
     std::vector<String> pending_changes;
     while (file.available()) {
-        pending_changes.push_back(file.readStringUntil('\n'));
+        String line = file.readStringUntil('\n');
+        Serial.println("Got line: \n" + line);
+        int cr_index = line.indexOf('\r');
+        if (cr_index != -1) {
+            Serial.println("Removing cr");
+            line.remove(cr_index);
+        }
+        int nl_index = line.indexOf('\n');
+        if (nl_index != -1) {
+            Serial.println("Removing nl");
+            line.remove(nl_index);
+        }
+        pending_changes.push_back(line);
     }
 
     unlock(file_name);
