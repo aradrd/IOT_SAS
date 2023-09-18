@@ -1,9 +1,9 @@
 #include <GoogleSheet.h>
 
 const std::map<FileName, String> FILE_TO_POST_EXTENSION {
-    {ATTENDANCE_LOG, ADD_LOG},
-    {PENDING_USER_LIST, ADD_USER},
     {USER_LIST, GET_USERS},
+    {ATTENDANCE_LOG, ADD_MULTIPLE_LOG},
+    {PENDING_USER_LIST, ADD_MULTIPLE_USERS},
 };
 
 String GoogleSheet::getUserList(){
@@ -33,7 +33,8 @@ void GoogleSheet::establishConnection(const String& override_url) {
         return;
     }
 
-    const String& final_url = override_url ? override_url : url;
+    const String& final_url = override_url != "" ? override_url : url;
+    Serial.println("Connecting to " + final_url);
     http.begin(final_url.c_str());
     http.setFollowRedirects(HTTPC_STRICT_FOLLOW_REDIRECTS);
 }

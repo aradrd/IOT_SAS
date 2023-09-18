@@ -41,11 +41,13 @@ const uint16_t DISPLAY_BLINK_DELAY = 600;
 const uint16_t MILLIS_TIMEOUT = 1000 * 30;
 
 // GoogleSheet consts
-const String GOOGLE_SCRIPT_ID = "AKfycbyNgiYIkcQo-valD85SHRbkjEFaytGMBlk8dUfbdm2cUYEnLMSYKyyBRF7OxZy4moTh";
+const String GOOGLE_SCRIPT_ID = "AKfycbxyd0cSGXC7Tyod82aGE3ZDRcK-gwAVfm5b5D8BjovNQe9n40dhFkp2fnpBQ8fYjlY";
 const std::map<String, String> SSID_TO_PASS = {{"Vladimir Computin", "100200300"}};
 const String ADD_USER = "add_user";
 const String ADD_LOG = "add_log";
 const String GET_USERS = "get_approved_users";
+const String ADD_MULTIPLE_LOG = "add_log_entries";
+const String ADD_MULTIPLE_USERS = "add_multi_users";
 
 // IOTKeypad consts
 const uint8_t KEYPAD_ADDR = 0x20;
