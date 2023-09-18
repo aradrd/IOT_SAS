@@ -3,21 +3,11 @@
 const std::map<FileName, String> FILE_TO_POST_EXTENSION {
     {ATTENDANCE_LOG, ADD_LOG},
     {PENDING_USER_LIST, ADD_USER},
+    {USER_LIST, GET_USERS},
 };
 
 String GoogleSheet::getUserList(){
-    establishConnection();
-    int httpCode = http.GET();
-    String payload;
-    if (httpCode > 0) {
-        payload = http.getString();
-    }
-    else {
-        Serial.println("Error on HTTP request");
-    }
-
-    endConnection();
-    return payload;
+    return getDataWithPost("", getPostUrl(USER_LIST));
 }
 
 bool GoogleSheet::postEntry(FileName file_name, const String& entry) {
@@ -54,6 +44,18 @@ void GoogleSheet::endConnection() {
 
 const String GoogleSheet::get_url(const String& google_script_id) {
     return "https://script.google.com/macros/s/" + google_script_id + "/exec";
+}
+
+String GoogleSheet::getDataWithPost(const String& data, const String& post_url){
+    establishConnection(post_url);
+    http.addHeader("Content-Type", "text/csv");
+    int http_response_code = http.POST(data);
+    Serial.print("HTTP Status Code: ");
+    Serial.println(http_response_code);
+    String payload = http.getString();
+    Serial.println("Payload: " + payload);
+    endConnection();
+    return payload;
 }
 
 bool GoogleSheet::postData(const String& data, const String& post_url){
