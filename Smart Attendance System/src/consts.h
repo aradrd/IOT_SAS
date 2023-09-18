@@ -39,9 +39,10 @@ const uint16_t MSG_DELAY = 5000;
 const uint16_t SHORT_MSG_DELAY = 1000;
 const uint16_t DISPLAY_BLINK_DELAY = 600;
 const uint16_t MILLIS_TIMEOUT = 1000 * 30;
+const uint16_t SYNC_FREQ = 1000 * 30;
 
 // GoogleSheet consts
-const String GOOGLE_SCRIPT_ID = "AKfycbxyd0cSGXC7Tyod82aGE3ZDRcK-gwAVfm5b5D8BjovNQe9n40dhFkp2fnpBQ8fYjlY";
+const String GOOGLE_SCRIPT_ID = "AKfycbyhK_XD99fQEqm_ouFhAJ1i9xJmXKBHKcf8svS75bZuDDAxTCewBTPPuNIHElD8hSrp";
 const std::map<String, String> SSID_TO_PASS = {{"Vladimir Computin", "100200300"}};
 const String ADD_USER = "add_user";
 const String ADD_LOG = "add_log";
@@ -84,6 +85,6 @@ const String ENTER_ID = "Enter a 9\ndigit ID.\nPress B to\nundo";
 const String INVALID_KEY = "Wrong key";
 
 const uint16_t STACK_SIZE = 16384;
-const uint16_t JSON_SIZE = 1024;
+const uint16_t JSON_SIZE = 8192;
 
 #endif

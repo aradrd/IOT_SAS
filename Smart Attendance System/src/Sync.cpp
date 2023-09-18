@@ -22,10 +22,9 @@ void Sync::pull() {
     String payload = sheets.getUserList();
     Serial.println("Got userlist");
     UserList user_list = parseUserList(payload);
-    Serial.println("Parsed userlist");
+    Serial.println("Parsed userlist, size: " + String(user_list.size()));
     files.writeUserList(user_list);
     Serial.println("Wrote userlist");
-    Serial.println(files.debugReadFile(USER_LIST));
     Serial.println("Finished pulling.");
 }
 
