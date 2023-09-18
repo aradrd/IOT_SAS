@@ -54,7 +54,6 @@ String GoogleSheet::getDataWithPost(const String& data, const String& post_url){
     Serial.print("HTTP Status Code: ");
     Serial.println(http_response_code);
     String payload = http.getString();
-    Serial.println("Payload: " + payload);
     endConnection();
     return payload;
 }
@@ -66,7 +65,6 @@ bool GoogleSheet::postData(const String& data, const String& post_url){
     Serial.print("HTTP Status Code: ");
     Serial.println(http_response_code);
     String payload = http.getString();
-    Serial.println("Payload: " + payload);
     endConnection();
     return http_response_code == 200;
 }

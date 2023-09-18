@@ -47,7 +47,7 @@ void SmartAttendanceSystem::factoryReset() {
 }
 
 void SmartAttendanceSystem::tickWaitForCard(){
-    if (millis() - last_sync_call > 1000 * 120) {
+    if (millis() - last_sync_call > SYNC_FREQ) {
         callSync();
     }
 
@@ -69,7 +69,6 @@ void SmartAttendanceSystem::tickWaitForCard(){
         // check if approved
         if (files.uidApproved(uid)) {
             Serial.println("Card Approved");
-            Serial.println(files.readUserList());
             display.blink();
             state = CARD_APPROVED;
             String entry = createLogEntry(uid);
@@ -80,6 +79,7 @@ void SmartAttendanceSystem::tickWaitForCard(){
         // check if waiting for approval
         else if (files.idExists(uid)){
             display.displayWithDelay(WAITING_FOR_APPROVAL);
+            callSync();
             resetState();
         }
         else{
