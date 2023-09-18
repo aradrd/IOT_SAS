@@ -26,6 +26,7 @@ private:
     void endConnection();
     const String get_url(const String& google_script_id);
     bool postData(const String& data, const String& post_url);
+    String getDataWithPost(const String& data, const String& post_url);
     String getPostUrl(FileName file_name);
     bool postMultiEntries(FileName file_name, const std::vector<String>& entries);
     bool postEntry(FileName file_name, const String& entry); // Slow.
