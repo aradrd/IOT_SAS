@@ -29,23 +29,21 @@ String GoogleSheet::getPostUrl(FileName file_name) {
 }
 
 bool GoogleSheet::postMultiEntries(FileName file_name, const std::vector<String>& entries) {
+    String data = "";
     for (const auto& entry : entries) {
-        postData(entry, getPostUrl(file_name));
+        data += entry + "\n";
     }
-    return false;
-    // return postData(data, getPostUrl(file_name));
+    data.remove(data.length() - 1); // Remove trailing \n
+    return postData(data, getPostUrl(file_name));
 }
 
-void GoogleSheet::establishConnection(const String& post_ext) {
+void GoogleSheet::establishConnection(const String& override_url) {
     if (WiFi.status() != WL_CONNECTED) {
         Serial.println("WiFi not connected.");
         return;
     }
 
-    String final_url = url;
-    if (post_ext) {
-        final_url += "?" + post_ext;
-    }
+    const String& final_url = override_url ? override_url : url;
     http.begin(final_url.c_str());
     http.setFollowRedirects(HTTPC_STRICT_FOLLOW_REDIRECTS);
 }
@@ -59,7 +57,7 @@ const String GoogleSheet::get_url(const String& google_script_id) {
 }
 
 bool GoogleSheet::postData(const String& data, const String& post_url){
-    establishConnection();
+    establishConnection(post_url);
     http.addHeader("Content-Type", "text/csv");
     int http_response_code = http.POST(data);
     Serial.print("HTTP Status Code: ");
