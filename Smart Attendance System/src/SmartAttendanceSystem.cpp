@@ -6,7 +6,6 @@ void SmartAttendanceSystem::init() {
     sheets.init(); // Also inits wifi.
     keypad.init();
     display.init();
-    sheets.init();
     rfid.init();
     time.init();
     sync.init();

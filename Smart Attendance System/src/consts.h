@@ -25,6 +25,7 @@ enum FileName {
 const String SSID = "TechPublic2";
 const String PASSWORD = "";
 const uint16_t RECONNECT_TIMEOUT = 1000 * 10;
+const uint8_t CONNECTION_ATTEMPTS_BEFORE_RECONNECT = 30;
 
 
 // main consts
