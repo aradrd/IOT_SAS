@@ -1,5 +1,6 @@
 #include <IOTFiles.h>
 #include <vector>
+#include <cassert>
 
 const std::map<FileName, String> FILE_TO_PATH = {
     {ATTENDANCE_LOG, ATTENDANCELOG_PATH},
@@ -22,13 +23,14 @@ void IOTFiles::clearAttendanceLog() {
     clearFile(ATTENDANCE_LOG);
 }
 
-void IOTFiles::writeUserList(const UserList& user_list) {
-    lock(USER_LIST);
-    clearUserList();
+void IOTFiles::writeUserList(const UserList& user_list, FileName file_name) {
+    assert(file_name == PENDING_USER_LIST || file_name == USER_LIST);
+    lock(file_name);
+    clearFile(file_name);
     for (const auto& user : user_list) {
-        addEntry(USER_LIST, user.id, user.uid, true);
+        addEntry(file_name, user.id, user.uid, true);
     }
-    unlock(USER_LIST);
+    unlock(file_name);
 }
 
 String IOTFiles::debugReadFile(FileName file_name) {
@@ -41,10 +43,6 @@ void IOTFiles::lock(FileName file_name) {
 
 void IOTFiles::unlock(FileName file_name) {
     mutexes[FILE_TO_LOCK.at(file_name)].unlock();
-}
-
-void IOTFiles::clearUserList() {
-    clearFile(USER_LIST);
 }
 
 File IOTFiles::open(FileName file_name, const String& mode) {

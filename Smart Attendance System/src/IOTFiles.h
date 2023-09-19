@@ -26,13 +26,13 @@ public:
 
     void addAttendanceLogEntry(const String& entry);
     void clearAttendanceLog();
-    void writeUserList(const UserList& user_list);
+    void writeUserList(const UserList& user_list, FileName file_name);
     String debugReadFile(FileName file_name);
 
     void clearPendingUserList();
     void addPendingUserEntry(const String& id, const String& uid);
 
-   std::vector<String> getChanges(FileName file_name, uint16_t from_line);
+   std::vector<String> getChanges(FileName file_name, uint16_t amount_synced);
 
    void clearAllFiles();
 
@@ -48,14 +48,12 @@ private:
 
     void lock(FileName file_name);
     void unlock(FileName file_name);
-    void clearUserList();
     File open(FileName file_name, const String& mode = "r");
     void clearFile(FileName file_name);
     void addEntry(FileName file_name, const String& entry, const bool is_locked = false);
     void addEntry(FileName file_name, const String& id, const String& uid, const bool is_locked = false);
     String readFile(FileName file_name);
     String getLineWithString(FileName file_name, const String& str);
-    String createUserEntry(const String& id, const String& uid);
 };
 
 #endif
