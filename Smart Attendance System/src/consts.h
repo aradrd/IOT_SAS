@@ -43,7 +43,7 @@ const uint16_t MILLIS_TIMEOUT = 1000 * 30;
 const uint16_t SYNC_FREQ = 1000 * 30;
 
 // GoogleSheet consts
-const String GOOGLE_SCRIPT_ID = "AKfycbxGrbzkap--dDWqfRDkn0slGU7DkWj0UkBfrjYqAnO886tFls98lggRsiL5I8ci10CA";
+const String GOOGLE_SCRIPT_ID = "AKfycbzOoGUfWHnI8krG0xzLMFQZcMpy6ZhAPx6bAKA7MIuYvxN-9yUP5ssotCKmaSYSvDTs";
 const String ADD_USER = "add_user";
 const String ADD_LOG = "add_log";
 const String GET_USERS = "get_approved_users";
