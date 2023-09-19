@@ -53,9 +53,13 @@ void GoogleSheet::validateWiFi(bool force_reconnect) {
 
     WiFi.reconnect();
     Serial.print("Attemting to reconnect..");
+    uint8_t i = 0;
     do {
         Serial.print(".");
         delay(1000);
+        if (i++ % 30 == 0) {
+            WiFi.reconnect();
+        }
     } while (!WiFi.isConnected());
     Serial.println();
 
