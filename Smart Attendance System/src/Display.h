@@ -4,6 +4,7 @@
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 #include <Wire.h>
+#include <WiFi.h>
 
 #include <consts.h>
 
@@ -53,10 +54,23 @@ public:
     }
 
     void clear() {
+        currently_displayed = "";
+        drawWifiStatus();
+    }
+
+    void drawWifiStatus(){
         display.setCursor(0, 0);
         display.clearDisplay();
+        if(!currently_displayed.isEmpty()){
+            display.print(currently_displayed);
+        }
+        if (WiFi.status() == WL_CONNECTED) {
+            display.drawBitmap(110,0,wifiicon,8,8,WHITE);  
+        }
+        else{
+            display.drawBitmap(110,0,nowifiicon,8,8,WHITE);
+        }
         display.display();
-        currently_displayed = "";
     }
 
     String getDisplayed(){
