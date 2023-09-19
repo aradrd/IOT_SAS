@@ -37,7 +37,7 @@ private:
     Preferences preferences;
 
     bool pull();
-    UserList parseUserList(const String& payload);
+    UserList parseUserList(const String& payload, const String& list);
     bool push();
     bool pushChanges(FileName file_name);
 };
