@@ -83,6 +83,7 @@ void SmartAttendanceSystem::tickWaitForCard(){
         }
         // check if waiting for approval
         else if (files.idExists(uid)){
+            Serial.println("Pending");
             display.displayWithDelay(WAITING_FOR_APPROVAL);
             callSync();
             resetState();

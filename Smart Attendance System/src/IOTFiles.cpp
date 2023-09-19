@@ -19,14 +19,10 @@ void IOTFiles::addAttendanceLogEntry(const String& entry) {
     addEntry(ATTENDANCE_LOG, entry);
 }
 
-void IOTFiles::clearAttendanceLog() {
-    clearFile(ATTENDANCE_LOG);
-}
-
 void IOTFiles::writeUserList(const UserList& user_list, FileName file_name) {
     assert(file_name == PENDING_USER_LIST || file_name == USER_LIST);
     lock(file_name);
-    clearFile(file_name);
+    clearFile(file_name, true);
     for (const auto& user : user_list) {
         addEntry(file_name, user.id, user.uid, true);
     }
@@ -38,11 +34,13 @@ String IOTFiles::debugReadFile(FileName file_name) {
 }
 
 void IOTFiles::lock(FileName file_name) {
+    Serial.println("Attempting to lock " + FILE_TO_PATH.at(file_name));
     mutexes[FILE_TO_LOCK.at(file_name)].lock();
 }
 
 void IOTFiles::unlock(FileName file_name) {
     mutexes[FILE_TO_LOCK.at(file_name)].unlock();
+    Serial.println("Unlocked " + FILE_TO_PATH.at(file_name));
 }
 
 File IOTFiles::open(FileName file_name, const String& mode) {
@@ -55,17 +53,29 @@ File IOTFiles::open(FileName file_name, const String& mode) {
 }
 
 void IOTFiles::clearAllFiles() {
+    for (uint8_t i = 0; i < AMOUNT_OF_FILES; i++) {
+        lock(static_cast<FileName>(i));
+    }
     if (!SPIFFS.format()) {
         Serial.println("Format failed...");
     }
     else {
         Serial.println("Successfully formatted SPIFFS.");
     }
+    for (uint8_t i = 0; i < AMOUNT_OF_FILES; i++) {
+        unlock(static_cast<FileName>(i));
+    }
 }
 
-void IOTFiles::clearFile(FileName file_name) {
+void IOTFiles::clearFile(FileName file_name, bool is_locked) {
+    if (!is_locked) {
+        lock(file_name);
+    }
     File file = open(file_name, "w");
     file.close();
+    if (!is_locked) {
+        unlock(file_name);
+    }
 }
 
 void IOTFiles::addEntry(FileName file_name, const String& entry, const bool is_locked) {
@@ -85,11 +95,13 @@ void IOTFiles::addEntry(FileName file_name, const String& id, const String& uid,
 }
 
 String IOTFiles::readFile(FileName file_name) {
+    lock(file_name);
     File file = open(file_name);
     String res;
     while (file.available()) {
         res += static_cast<char>(file.read());
     }
+    unlock(file_name);
     return res;
 }
 
@@ -116,17 +128,21 @@ String IOTFiles::readAttendanceLog(){
 }
 
 bool IOTFiles::idExists(const String& id){
+    Serial.println("idExists");
     return (!getLineWithString(PENDING_USER_LIST, id).isEmpty() ||
             !getLineWithString(USER_LIST, id).isEmpty());
 }
 
 bool IOTFiles::uidApproved(const String& uid){
+    Serial.println("uidApproved");
     return (!getLineWithString(USER_LIST, uid).isEmpty());
 }
 
 String IOTFiles::getLineWithString(FileName file_name, const String& str){
+    lock(file_name);
     File file = open(file_name);
     String line;
+    String target_line = "";
     size_t size = file.size();
     line.reserve(size);
 
@@ -134,15 +150,15 @@ String IOTFiles::getLineWithString(FileName file_name, const String& str){
     while(!line.isEmpty()){
         // check if line includes id
         if(line.indexOf(str) != -1 ){
-            //found a line, return it
-            file.close();
-            return line;
+            target_line = line;
+            break;
         }
         // read next line
         line = file.readStringUntil('\n');
     }
     file.close();
-    return "";
+    unlock(file_name);
+    return target_line;
 }
 
 std::vector<String> IOTFiles::getChanges(FileName file_name, uint16_t from_line) {
