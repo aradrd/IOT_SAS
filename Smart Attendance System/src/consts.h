@@ -43,8 +43,7 @@ const uint16_t MILLIS_TIMEOUT = 1000 * 30;
 const uint16_t SYNC_FREQ = 1000 * 30;
 
 // GoogleSheet consts
-const String GOOGLE_SCRIPT_ID = "AKfycbyrdsCXX6HxX229H9p2tOkxToncmkRhgwMG9xGWr5xIjGKob46RjUYIUOPt3KZSa_gF";
-const std::map<String, String> SSID_TO_PASS = {{"Vladimir Computin", "100200300"}};
+const String GOOGLE_SCRIPT_ID = "AKfycbxGrbzkap--dDWqfRDkn0slGU7DkWj0UkBfrjYqAnO886tFls98lggRsiL5I8ci10CA";
 const String ADD_USER = "add_user";
 const String ADD_LOG = "add_log";
 const String GET_USERS = "get_approved_users";
