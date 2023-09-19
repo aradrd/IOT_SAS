@@ -17,12 +17,14 @@ public:
 
     String getUserList();
     uint16_t postChanges(FileName file_name, const std::vector<String>& pending_changes);
+    void validateWiFi();
+    void init();
 
 private:
     HTTPClient http;
     const String url;
 
-    void establishConnection(const String& override_url = "");
+    bool establishConnection(const String& override_url = "");
     void endConnection();
     const String get_url(const String& google_script_id);
     bool postData(const String& data, const String& post_url);
