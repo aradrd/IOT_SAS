@@ -11,7 +11,7 @@ public:
     IOTTime(const IOTTime&) = default;
     IOTTime& operator=(const IOTTime&) = delete;
 
-    void init();
+    bool init();
     String getTimeStamp();
     void printLocalTime();
 

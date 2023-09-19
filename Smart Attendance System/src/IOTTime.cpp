@@ -8,8 +8,9 @@ const char* NTP_SERVER = "time.google.com";
 const long  gmtOffset_sec = 2 * 3600;
 const int   daylightOffset_sec = 3600;
 
-void IOTTime::init() {
+bool IOTTime::init() {
     configTime(gmtOffset_sec, daylightOffset_sec, NTP_SERVER);
+    return getLocalTime(&timeinfo);
 }
 
 String IOTTime::getTimeStamp() {

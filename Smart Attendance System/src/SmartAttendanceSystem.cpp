@@ -3,11 +3,14 @@
 void sync_thread(void*);
 
 void SmartAttendanceSystem::init() {
-    sheets.init(); // Also inits wifi.
-    keypad.init();
     display.init();
+    sheets.init(); // Also inits wifi.
+    while (!time.init()) {
+        sheets.validateWiFi();
+    }
+    display.clear();
+    keypad.init();
     rfid.init();
-    time.init();
     sync.init();
 
     callSync();

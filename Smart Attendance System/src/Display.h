@@ -29,6 +29,7 @@ public:
         display.setTextSize(DISPLAY_TEXT_SIZE);
         display.setTextColor(DISPLAY_TEXT_COLOR);
         clear();
+        println("Waiting\nfor\nNTP...");
     }
 
     void print(const char& ch) {
