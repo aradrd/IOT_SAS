@@ -17,7 +17,7 @@ public:
 
     String getUserList();
     uint16_t postChanges(FileName file_name, const std::vector<String>& pending_changes);
-    void validateWiFi();
+    void validateWiFi(bool force_reconnect = false);
     void init();
 
 private:

@@ -36,10 +36,10 @@ private:
     IOTFiles& files;
     Preferences preferences;
 
-    void pull();
+    bool pull();
     UserList parseUserList(const String& payload);
-    void push();
-    void pushChanges(FileName file_name);
+    bool push();
+    bool pushChanges(FileName file_name);
 };
 
 #endif

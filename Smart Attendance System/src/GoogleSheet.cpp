@@ -46,8 +46,8 @@ void GoogleSheet::init() {
     Serial.println();
 }
 
-void GoogleSheet::validateWiFi() {
-    if (WiFi.isConnected()) {
+void GoogleSheet::validateWiFi(bool force_reconnect) {
+    if (!force_reconnect && WiFi.isConnected()) {
         return;
     }
 
@@ -57,6 +57,7 @@ void GoogleSheet::validateWiFi() {
         Serial.print(".");
         delay(1000);
     } while (!WiFi.isConnected());
+    Serial.println();
 
     Serial.println("WiFi Connected.");
 }
