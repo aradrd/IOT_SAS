@@ -39,26 +39,34 @@ void GoogleSheet::init() {
     }
 
     Serial.print("Connecting to WiFi..");
-    while (!WiFi.isConnected()) {
+    for (uint8_t i = 0; !WiFi.isConnected() && i < CONNECTION_ATTEMPTS_BEFORE_RECONNECT; i++) {
         Serial.print(".");
         delay(1000);
     }
     Serial.println();
-}
-
-void GoogleSheet::validateWiFi() {
-    if (WiFi.isConnected()) {
-        return;
+    if (!WiFi.isConnected()) {
     }
 
-    WiFi.reconnect();
+void GoogleSheet::reconnectWiFi() {
     Serial.print("Attemting to reconnect..");
+    WiFi.reconnect();
+    uint8_t i = 0;
     do {
         Serial.print(".");
         delay(1000);
+        if (i++ % CONNECTION_ATTEMPTS_BEFORE_RECONNECT == 0) {
+            WiFi.reconnect();
+        }
     } while (!WiFi.isConnected());
-
     Serial.println("WiFi Connected.");
+}
+
+void GoogleSheet::validateWiFi(bool force_reconnect) {
+    if (!force_reconnect && WiFi.isConnected()) {
+        return;
+    }
+
+    reconnectWiFi();
 }
 
 bool GoogleSheet::establishConnection(const String& override_url) {
