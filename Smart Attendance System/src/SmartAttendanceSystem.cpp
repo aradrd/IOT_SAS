@@ -137,7 +137,9 @@ void SmartAttendanceSystem::tickWaitForId(){
             break;
         case BACKSPACE_KEY:
             resetTimeUntouched();
-            display.backspace();
+            if(!is_first_digit){
+                display.backspace();
+            }
             break;
         case CANCEL_KEY:
             resetState();
