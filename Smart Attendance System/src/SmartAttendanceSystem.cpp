@@ -42,7 +42,9 @@ String SmartAttendanceSystem::createLogEntry(const String& uid) {
 
 void SmartAttendanceSystem::callSync() {
     last_sync_call = millis();
-    Serial.println("Calling sync.");
+    if (IOT_DEBUG) {
+        Serial.println("Calling sync.");
+    }
     xTaskCreate(sync_thread, "sync", STACK_SIZE, static_cast<void*>(&sync), 1, nullptr);
 }
 
@@ -70,10 +72,14 @@ void SmartAttendanceSystem::tickWaitForCard(){
 
     String uid = rfid.tick();
     if (uid != "") {
-        Serial.println("Found RFID: " + uid);
+        if (IOT_DEBUG) {
+            Serial.println("Found RFID: " + uid);
+        }
         // check if approved
         if (files.uidApproved(uid)) {
-            Serial.println("Card Approved");
+            if (IOT_DEBUG) {
+                Serial.println("Card Approved");
+            }
             display.blink();
             state = CARD_APPROVED;
             String entry = createLogEntry(uid);
@@ -83,7 +89,9 @@ void SmartAttendanceSystem::tickWaitForCard(){
         }
         // check if waiting for approval
         else if (files.idExists(uid)){
-            Serial.println("Pending");
+            if (IOT_DEBUG) {
+                Serial.println("Pending");
+            }
             display.displayWithDelay(WAITING_FOR_APPROVAL);
             callSync();
             resetState();
@@ -189,7 +197,9 @@ void SmartAttendanceSystem::validateAndSendId(){
         }
         else{
             files.addPendingUserEntry(id, uid_in_registration);
-            Serial.println("Got " + id);
+            if (IOT_DEBUG) {
+                Serial.println("Got " + id);
+            }
             display.displayWithDelay(SENDING_USER_INFO);
             callSync();
             resetState();
@@ -211,6 +221,8 @@ void sync_thread(void* sync) {
     time_t start = millis();
     static_cast<Sync*>(sync)->sync();
     time_t finish = millis();
-    Serial.println("Sync took " + String(finish - start) + " millis.");
+    if (IOT_DEBUG) {
+        Serial.println("Sync took " + String(finish - start) + " millis.");
+    }
     vTaskDelete(nullptr);
 }

@@ -34,20 +34,26 @@ String IOTFiles::debugReadFile(FileName file_name) {
 }
 
 void IOTFiles::lock(FileName file_name) {
-    Serial.println("Attempting to lock " + FILE_TO_PATH.at(file_name));
+    if (IOT_DEBUG) {
+        Serial.println("Attempting to lock " + FILE_TO_PATH.at(file_name));
+    }
     mutexes[FILE_TO_LOCK.at(file_name)].lock();
 }
 
 void IOTFiles::unlock(FileName file_name) {
     mutexes[FILE_TO_LOCK.at(file_name)].unlock();
-    Serial.println("Unlocked " + FILE_TO_PATH.at(file_name));
+    if (IOT_DEBUG) {
+        Serial.println("Unlocked " + FILE_TO_PATH.at(file_name));
+    }
 }
 
 File IOTFiles::open(FileName file_name, const String& mode) {
     const String& path = FILE_TO_PATH.at(file_name);
     File file = SPIFFS.open(path, mode.c_str());
     if (!file) {
-        Serial.println("Error opening file " + path);
+        if (IOT_DEBUG) {
+            Serial.println("Error opening file " + path);
+        }
     }
     return file;
 }
@@ -57,10 +63,14 @@ void IOTFiles::clearAllFiles() {
         lock(static_cast<FileName>(i));
     }
     if (!SPIFFS.format()) {
-        Serial.println("Format failed...");
+        if (IOT_DEBUG) {
+            Serial.println("Format failed...");
+        }
     }
     else {
-        Serial.println("Successfully formatted SPIFFS.");
+        if (IOT_DEBUG) {
+            Serial.println("Successfully formatted SPIFFS.");
+        }
     }
     for (uint8_t i = 0; i < AMOUNT_OF_FILES; i++) {
         unlock(static_cast<FileName>(i));
@@ -128,13 +138,17 @@ String IOTFiles::readAttendanceLog(){
 }
 
 bool IOTFiles::idExists(const String& id){
-    Serial.println("idExists");
+    if (IOT_DEBUG) {
+        Serial.println("idExists");
+    }
     return (!getLineWithString(PENDING_USER_LIST, id).isEmpty() ||
             !getLineWithString(USER_LIST, id).isEmpty());
 }
 
 bool IOTFiles::uidApproved(const String& uid){
-    Serial.println("uidApproved");
+    if (IOT_DEBUG) {
+        Serial.println("uidApproved");
+    }
     return (!getLineWithString(USER_LIST, uid).isEmpty());
 }
 
@@ -171,15 +185,21 @@ std::vector<String> IOTFiles::getChanges(FileName file_name, uint16_t from_line)
     std::vector<String> pending_changes;
     while (file.available()) {
         String line = file.readStringUntil('\n');
-        Serial.println("Got line: \n" + line);
+        if (IOT_DEBUG) {
+            Serial.println("Got line: \n" + line);
+        }
         int cr_index = line.indexOf('\r');
         if (cr_index != -1) {
-            Serial.println("Removing cr");
+            if (IOT_DEBUG) {
+                Serial.println("Removing cr");
+            }
             line.remove(cr_index);
         }
         int nl_index = line.indexOf('\n');
         if (nl_index != -1) {
-            Serial.println("Removing nl");
+            if (IOT_DEBUG) {
+                Serial.println("Removing nl");
+            }
             line.remove(nl_index);
         }
         pending_changes.push_back(line);

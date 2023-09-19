@@ -6,7 +6,9 @@ char keymap[17] = "147*2580369#ABCD";
 void IOTKeypad::init() {
     if (keypad.begin() == false)
     {
-        Serial.println("Can't communicate to keypad.");
+        if (IOT_DEBUG) {
+            Serial.println("Can't communicate to keypad.");
+        }
     }
     else
     {
@@ -23,8 +25,10 @@ char IOTKeypad::tick() {
             return key;
         }
         key = keypad.getLastChar(); // note we want the translated char
-        Serial.print(key);
-        Serial.println(" pressed.");
+        if (IOT_DEBUG) {
+            Serial.print(key);
+            Serial.println(" pressed.");
+        }
     }
     key_still_pressed = keypad.isPressed();
     return key;

@@ -8,6 +8,8 @@
 #include <WString.h>
 #include <Adafruit_SSD1306.h>
 
+const bool IOT_DEBUG = false;
+
 struct User {
     const String id;
     const String uid;

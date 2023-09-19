@@ -13,7 +13,9 @@ void init_i2c() {
 void init_serial() {
   Serial.begin(BAUD);
   while(!Serial);
-  Serial.println("Initialized Serial.");
+  if (IOT_DEBUG) {
+      Serial.println("Initialized Serial.");
+  }
 }
 
 void setup() {

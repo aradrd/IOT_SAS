@@ -15,7 +15,9 @@ bool IOTTime::init() {
 
 String IOTTime::getTimeStamp() {
     if (!getLocalTime(&timeinfo)) {
-        Serial.println("Failed getting time");
+        if (IOT_DEBUG) {
+            Serial.println("Failed getting time");
+        }
     }
     char buffer[TIMESTAMP_BUFFER_SIZE];
     std::strftime(buffer, sizeof(buffer), TIMESTAMP_FORMAT, &timeinfo);
@@ -25,8 +27,12 @@ String IOTTime::getTimeStamp() {
 void IOTTime::printLocalTime() {
     struct tm timeinfo;
     if(!getLocalTime(&timeinfo)){
-        Serial.println("Failed to obtain time");
+        if (IOT_DEBUG) {
+            Serial.println("Failed to obtain time");
+        }
         return;
     }
-    Serial.println(&timeinfo, TIMESTAMP_FORMAT);
+    if (IOT_DEBUG) {
+        Serial.println(&timeinfo, TIMESTAMP_FORMAT);
+    }
 }

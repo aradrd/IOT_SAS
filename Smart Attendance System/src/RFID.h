@@ -23,7 +23,9 @@ public:
     void init() {
         if (!Serial) {
             // throw SerialUnintializedException();
-            Serial.println("Serial init error");
+            if (IOT_DEBUG) {
+                Serial.println("Serial init error");
+            }
         }
         SPI.begin();
         rfid.PCD_Init();
@@ -36,7 +38,9 @@ public:
 
         // Select one of the cards
         if (!rfid.PICC_ReadCardSerial()) {
-            Serial.println("Failed reading card serial.");
+            if (IOT_DEBUG) {
+                Serial.println("Failed reading card serial.");
+            }
             return "";
         }
 

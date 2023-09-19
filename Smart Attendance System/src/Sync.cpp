@@ -7,17 +7,23 @@ void Sync::init() {
 
 void Sync::sync() {
     if (!mutex.try_lock()) {
-        Serial.println("Thread already running.");
+        if (IOT_DEBUG) {
+            Serial.println("Thread already running.");
+        }
         return;
     }
 
     while (!push()) {
-        Serial.println("Failed pushing.");
+        if (IOT_DEBUG) {
+            Serial.println("Failed pushing.");
+        }
         sheets.validateWiFi(true);
     }
 
     while (!pull()) {
-        Serial.println("Failed pulling.");
+        if (IOT_DEBUG) {
+            Serial.println("Failed pulling.");
+        }
         sheets.validateWiFi(true);
     }
 
@@ -25,20 +31,30 @@ void Sync::sync() {
 }
 
 bool Sync::pull() {
-    Serial.println("Pulling...");
+    if (IOT_DEBUG) {
+        Serial.println("Pulling...");
+    }
     String payload = sheets.getUserList();
     if (payload == "") {
-        Serial.println("Communication failed.");
+        if (IOT_DEBUG) {
+            Serial.println("Communication failed.");
+        }
         return false;
     }
     UserList approved_user_list = parseUserList(payload, "approved");
     UserList pending_user_list = parseUserList(payload, "pending");
-    Serial.println("approved: " + String(approved_user_list.size()));
-    Serial.println("pending: " + String(pending_user_list.size()));
+    if (IOT_DEBUG) {
+        Serial.println("approved: " + String(approved_user_list.size()));
+    }
+    if (IOT_DEBUG) {
+        Serial.println("pending: " + String(pending_user_list.size()));
+    }
     files.writeUserList(approved_user_list, USER_LIST);
     files.writeUserList(pending_user_list, PENDING_USER_LIST);
     preferences.putUShort(FILE_TO_PREF.at(PENDING_USER_LIST).c_str(), pending_user_list.size());
-    Serial.println("Finished pulling.");
+    if (IOT_DEBUG) {
+        Serial.println("Finished pulling.");
+    }
     return true;
 }
 
@@ -60,32 +76,48 @@ bool Sync::push() {
 }
 
 bool Sync::pushChanges(FileName file_name) {
-    Serial.println("Pushing...");
+    if (IOT_DEBUG) {
+        Serial.println("Pushing...");
+    }
     const String& pref_name = FILE_TO_PREF.at(file_name);
     uint16_t amount_synced = preferences.getUShort(pref_name.c_str(), 0);
     uint16_t pushed;
     std::vector<String> pending_changes = files.getChanges(file_name, amount_synced);
     for (const auto& entry : pending_changes) {
-        Serial.println("Change: " + entry);
+        if (IOT_DEBUG) {
+            Serial.println("Change: " + entry);
+        }
     }
-    Serial.println("Calling postChanges for " + pref_name);
-    Serial.println("amount_synced before: " + String(amount_synced));
+    if (IOT_DEBUG) {
+        Serial.println("Calling postChanges for " + pref_name);
+    }
+    if (IOT_DEBUG) {
+        Serial.println("amount_synced before: " + String(amount_synced));
+    }
     if (pending_changes.size() > 0) {
         pushed = sheets.postChanges(file_name, pending_changes);
     }
     else {
-        Serial.println("Nothing changed, aborting post.");
+        if (IOT_DEBUG) {
+            Serial.println("Nothing changed, aborting post.");
+        }
         return true;
     }
 
     if (pushed > 0) {
         amount_synced += pushed;
         preferences.putUShort(pref_name.c_str(), amount_synced);
-        Serial.println("amount_synced after: " + String(preferences.getUShort(pref_name.c_str(), 0)));
-        Serial.println("Finished pushing.");
+        if (IOT_DEBUG) {
+            Serial.println("amount_synced after: " + String(preferences.getUShort(pref_name.c_str(), 0)));
+        }
+        if (IOT_DEBUG) {
+            Serial.println("Finished pushing.");
+        }
     }
     else {
-        Serial.println("Changes for " + pref_name + " weren't pushed.");
+        if (IOT_DEBUG) {
+            Serial.println("Changes for " + pref_name + " weren't pushed.");
+        }
     }
 
     return pushed > 0;
@@ -93,9 +125,13 @@ bool Sync::pushChanges(FileName file_name) {
 
 void Sync::clearSyncStatus() {
     if (preferences.clear()) {
-        Serial.println("Cleared preferences.");
+        if (IOT_DEBUG) {
+            Serial.println("Cleared preferences.");
+        }
     }
     else {
-        Serial.println("Failed clearing preferences.");
+        if (IOT_DEBUG) {
+            Serial.println("Failed clearing preferences.");
+        }
     }
 }

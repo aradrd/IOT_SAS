@@ -38,29 +38,41 @@ void GoogleSheet::init() {
       WiFi.begin(SSID);
     }
 
-    Serial.print("Connecting to WiFi..");
+    if (IOT_DEBUG) {
+        Serial.print("Connecting to WiFi..");
+    }
     for (uint8_t i = 0; !WiFi.isConnected() && i < CONNECTION_ATTEMPTS_BEFORE_RECONNECT; i++) {
-        Serial.print(".");
+        if (IOT_DEBUG) {
+            Serial.print(".");
+        }
         delay(1000);
     }
-    Serial.println();
+    if (IOT_DEBUG) {
+        Serial.println();
+    }
     if (!WiFi.isConnected()) {
         reconnectWiFi();
     }
 }
 
 void GoogleSheet::reconnectWiFi() {
-    Serial.print("Attemting to reconnect..");
+    if (IOT_DEBUG) {
+        Serial.print("Attemting to reconnect..");
+    }
     WiFi.reconnect();
     uint8_t i = 0;
     do {
-        Serial.print(".");
+        if (IOT_DEBUG) {
+            Serial.print(".");
+        }
         delay(1000);
         if (i++ % CONNECTION_ATTEMPTS_BEFORE_RECONNECT == 0) {
             WiFi.reconnect();
         }
     } while (!WiFi.isConnected());
-    Serial.println("WiFi Connected.");
+    if (IOT_DEBUG) {
+        Serial.println("WiFi Connected.");
+    }
 }
 
 void GoogleSheet::validateWiFi(bool force_reconnect) {
@@ -74,7 +86,9 @@ void GoogleSheet::validateWiFi(bool force_reconnect) {
 bool GoogleSheet::establishConnection(const String& override_url) {
     validateWiFi();
     const String& final_url = override_url != "" ? override_url : url;
-    Serial.println("Connecting to " + final_url);
+    if (IOT_DEBUG) {
+        Serial.println("Connecting to " + final_url);
+    }
     http.begin(final_url.c_str());
     http.setFollowRedirects(HTTPC_STRICT_FOLLOW_REDIRECTS);
     return true;
@@ -92,8 +106,10 @@ String GoogleSheet::getDataWithPost(const String& data, const String& post_url){
     establishConnection(post_url);
     http.addHeader("Content-Type", "text/csv");
     int http_response_code = http.POST(data);
-    Serial.print("HTTP Status Code: ");
-    Serial.println(http_response_code);
+    if (IOT_DEBUG) {
+        Serial.print("HTTP Status Code: ");
+        Serial.println(http_response_code);
+    }
     String payload = http.getString();
     endConnection();
     return payload;
@@ -103,8 +119,10 @@ bool GoogleSheet::postData(const String& data, const String& post_url){
     establishConnection(post_url);
     http.addHeader("Content-Type", "text/csv");
     int http_response_code = http.POST(data);
-    Serial.print("HTTP Status Code: ");
-    Serial.println(http_response_code);
+    if (IOT_DEBUG) {
+        Serial.print("HTTP Status Code: ");
+        Serial.println(http_response_code);
+    }
     String payload = http.getString();
     endConnection();
     return http_response_code == 200;

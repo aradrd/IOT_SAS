@@ -22,7 +22,9 @@ public:
     void init() {
         if (!display.begin(SSD1306_SWITCHCAPVCC, DISPLAY_ADDR))
         {
-            Serial.println(F("SSD1306 allocation failed"));
+            if (IOT_DEBUG) {
+                Serial.println(F("SSD1306 allocation failed"));
+            }
             return;
         }
 
