@@ -5,6 +5,7 @@ void sync_thread(void*);
 void SmartAttendanceSystem::init() {
     keypad.init();
     display.init();
+    sheets.init();
     rfid.init();
     time.init();
     sync.init();

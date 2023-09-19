@@ -22,6 +22,10 @@ enum FileName {
     AMOUNT_OF_FILES,
 };
 
+const String SSID = "TechPublic2";
+const String PASSWORD = "";
+const uint16_t RECONNECT_TIMEOUT = 1000 * 10;
+
 
 // main consts
 const uint16_t BAUD = 9600;
