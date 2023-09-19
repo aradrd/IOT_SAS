@@ -45,7 +45,9 @@ void GoogleSheet::init() {
     }
     Serial.println();
     if (!WiFi.isConnected()) {
+        reconnectWiFi();
     }
+}
 
 void GoogleSheet::reconnectWiFi() {
     Serial.print("Attemting to reconnect..");
