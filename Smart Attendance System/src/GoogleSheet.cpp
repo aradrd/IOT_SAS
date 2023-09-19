@@ -27,16 +27,47 @@ bool GoogleSheet::postMultiEntries(FileName file_name, const std::vector<String>
     return postData(data, getPostUrl(file_name));
 }
 
-void GoogleSheet::establishConnection(const String& override_url) {
-    if (WiFi.status() != WL_CONNECTED) {
-        Serial.println("WiFi not connected.");
+void GoogleSheet::init() {
+    WiFi.mode(WIFI_STA);
+    IPAddress dns(8,8,8,8);
+    WiFi.setAutoReconnect(true);
+    if (PASSWORD != "") {
+      WiFi.begin(SSID, PASSWORD);
+    }
+    else {
+      WiFi.begin(SSID);
+    }
+
+    Serial.print("Connecting to WiFi..");
+    while (!WiFi.isConnected()) {
+        Serial.print(".");
+        delay(1000);
+    }
+    Serial.println();
+}
+
+void GoogleSheet::validateWiFi() {
+    if (WiFi.isConnected()) {
         return;
     }
 
+    WiFi.reconnect();
+    Serial.print("Attemting to reconnect..");
+    do {
+        Serial.print(".");
+        delay(1000);
+    } while (!WiFi.isConnected());
+
+    Serial.println("WiFi Connected.");
+}
+
+bool GoogleSheet::establishConnection(const String& override_url) {
+    validateWiFi();
     const String& final_url = override_url != "" ? override_url : url;
     Serial.println("Connecting to " + final_url);
     http.begin(final_url.c_str());
     http.setFollowRedirects(HTTPC_STRICT_FOLLOW_REDIRECTS);
+    return true;
 }
 
 void GoogleSheet::endConnection() {

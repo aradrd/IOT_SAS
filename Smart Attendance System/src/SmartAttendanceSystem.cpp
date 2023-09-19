@@ -3,6 +3,7 @@
 void sync_thread(void*);
 
 void SmartAttendanceSystem::init() {
+    sheets.init(); // Also inits wifi.
     keypad.init();
     display.init();
     rfid.init();
