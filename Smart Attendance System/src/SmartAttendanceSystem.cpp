@@ -15,6 +15,7 @@ void SmartAttendanceSystem::init() {
 }
 
 void SmartAttendanceSystem::tick() {
+    display.drawWifiStatus();
     switch(state){
         case WAIT_FOR_CARD: 
             tickWaitForCard();

@@ -8,7 +8,6 @@ SmartAttendanceSystem sas;
 void init_i2c() {
   Wire.begin();
   Wire.setClock(I2C_CLOCK);
-  Wire1.begin(I2C_SDA_2, I2C_SCL_2, I2C_CLOCK);
 }
 
 void init_serial() {

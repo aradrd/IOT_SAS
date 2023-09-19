@@ -34,9 +34,6 @@ const uint16_t I2C_CLOCK = 40000;
 const uint8_t DISPLAY_WIDTH = 128;
 const uint8_t DISPLAY_HEIGHT = 64;
 
-const uint8_t I2C_SDA_2 = 33;
-const uint8_t I2C_SCL_2 = 32;
-
 // Time consts
 const uint8_t DELAY = 10;
 const uint16_t MSG_DELAY = 5000;
@@ -67,6 +64,14 @@ const uint8_t DISPLAY_RST = -1; // -1 means shared (whatever that means).
 const uint8_t DISPLAY_ADDR = 0x3C;
 const uint8_t DISPLAY_TEXT_SIZE = 2;
 const uint8_t DISPLAY_TEXT_COLOR = WHITE;
+
+const unsigned char wifiicon[] PROGMEM  ={ // wifi icon
+  0x00, 0xff, 0x00, 0x7e, 0x00, 0x18,0x00, 0x00
+};
+
+const unsigned char nowifiicon [] PROGMEM = {
+	0x81, 0x42, 0x24, 0x18, 0x18, 0x24, 0x42, 0x81
+};
 
 // RFID consts
 const uint8_t RFID_RST = 2;
