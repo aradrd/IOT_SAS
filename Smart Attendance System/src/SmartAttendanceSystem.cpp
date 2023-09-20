@@ -80,11 +80,11 @@ void SmartAttendanceSystem::tickWaitForCard(){
             if (IOT_DEBUG) {
                 Serial.println("Card Approved");
             }
-            display.blink();
-            state = CARD_APPROVED;
             String entry = createLogEntry(uid);
             files.addAttendanceLogEntry(entry);
             callSync();
+            display.blink();
+            state = CARD_APPROVED;
             resetState();
         }
         // check if waiting for approval

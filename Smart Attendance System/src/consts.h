@@ -24,8 +24,8 @@ enum FileName {
     AMOUNT_OF_FILES,
 };
 
-const String SSID = "TechPublic2";
-const String PASSWORD = "";
+const String SSID = "Sas";
+const String PASSWORD = "sas12345";
 const uint8_t CONNECTION_ATTEMPTS_BEFORE_RECONNECT = 30;
 
 
