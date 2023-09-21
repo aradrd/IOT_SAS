@@ -24,6 +24,7 @@ enum FileName {
     AMOUNT_OF_FILES,
 };
 
+// wifi consts
 const String SSID = "Sas";
 const String PASSWORD = "sas12345";
 const uint8_t CONNECTION_ATTEMPTS_BEFORE_RECONNECT = 30;
