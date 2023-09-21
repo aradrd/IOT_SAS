@@ -29,7 +29,7 @@ One of each of the following:
 * 4x4 Keypad
 
 ## Wiring Diagram
-!(hardware diagram)[Documentation/hardware_bb.png]
+![hardware diagram](Documentation/hardware_bb.png)
 
 ## Project Poster:
 Under construction...
