@@ -28,6 +28,9 @@ One of each of the following:
 * RFID Tag Reader (MFRC522)
 * 4x4 Keypad
 
+## Wiring Diagram
+!(hardware diagram)[Documentation/hardware_bb.png]
+
 ## Project Poster:
 Under construction...
  
