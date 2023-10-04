@@ -22,7 +22,7 @@ Each such scan is then logged locally on the device and sent to a different shee
 * bblanchon/ArduinoJson - v6.21.3
 
 ## Project Poster:
-Under construction...
+![sas_poster_page-0001](/Presentation/poster.jpg?raw=true "Poster")
  
 This project is part of ICST - The Interdisciplinary Center for Smart Technologies, Taub Faculty of Computer Science, Technion
 https://icst.cs.technion.ac.il/
