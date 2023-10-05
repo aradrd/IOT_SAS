@@ -32,8 +32,8 @@ One of each of the following:
 ## Wiring Diagram
 ![hardware diagram](Documentation/hardware_bb.png)
 
-## Project Poster
-Under construction...
+## Project Poster:
+![sas_poster_page-0001](/Presentation/poster.jpg?raw=true "Poster")
  
 ## About
 This project is part of ICST - The Interdisciplinary Center for Smart Technologies, Taub Faculty of Computer Science, Technion
